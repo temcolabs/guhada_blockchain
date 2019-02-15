@@ -1,0 +1,62 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "transactId",
+				"type": "uint256"
+			},
+			{
+				"name": "productId",
+				"type": "uint256"
+			},
+			{
+				"name": "hash",
+				"type": "string"
+			}
+		],
+		"name": "insert",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "transactId",
+				"type": "uint256"
+			}
+		],
+		"name": "getHash",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "productId",
+				"type": "uint256"
+			}
+		],
+		"name": "getByProduct",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]

@@ -1,0 +1,43 @@
+# logging config
+logging:
+  config: classpath:logback-spring.xml
+  file: ${spring.application.name}  # logback-spring.xml 에서 .log 붙여준다.
+---
+spring:
+  profiles:
+    active: local
+
+---
+spring:
+  profiles: local
+  datasource:
+    driverClassName: 'com.mysql.jdbc.Driver'
+    url: jdbc:mysql://proto.temco.io:3306/TEMCO_PROTO?useSSL=false
+    username: "temco"
+    password: ENC(XzH77mapsUnGq1LaxOcggI0+E/k05R5i)
+  jpa:
+    properties:
+      hibernate:
+        id:
+          new_generator_mappings: false
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: none
+  application:
+    name: datastorage
+  private-key: "p05pWLrQ3Ms6ePYnkHmZM1WdWwvjq0m/RG2/Dd/UjGxcKIlRYN7cY3FeYPT2wgnjRSfGD6ttq+RuDDJbsz1FXmFu9zM1LOQ2MfYp7JPB20Y="
+  contract-address: "0xb30d1a186de214a9226cfe7b603a033f8c0b04f6"
+  chain-url: "https://public-node.testnet.rsk.co:443"
+  thymeleaf:
+    cache: false
+
+server:
+  ssl:
+    keyStoreType: PKCS12
+    keyAlias: temcolab
+    useSelfCertificate: true
+    key-store-password: ENC(6HAKqcFfA411w3Q1uOAJeS24urhXr4Q5)
+  port: 8443
+  nonSecure:
+    port: 8080
