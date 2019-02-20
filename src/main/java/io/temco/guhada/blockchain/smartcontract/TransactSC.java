@@ -24,7 +24,7 @@ import java.util.concurrent.Callable;
  * <p><strong>Do not modify!</strong>
  * <p>Please use the <a href="https://docs.web3j.io/command_line.html">web3j command line tools</a>,
  * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the 
- * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
+ * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to uploadToBlockchain.
  *
  * <p>Generated with web3j version 3.4.0.
  */
@@ -36,7 +36,7 @@ public class TransactSC extends Contract {
             + "\t\"sourceMap\": \"27:772:0:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;27:772:0;;;;;;;\"\r\n"
             + "}";
 
-    public static final String FUNC_INSERT = "insert";
+    public static final String FUNC_INSERT = "generateQrCode";
 
     public static final String FUNC_GETHASH = "getHash";
 
