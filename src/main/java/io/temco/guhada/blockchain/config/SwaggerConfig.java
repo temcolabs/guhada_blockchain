@@ -31,8 +31,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("[title] Temco Swagger2 Sample")
-                .description("[description] this web page is swagger2 sample.")
+                .title("[Temco] Temco Si-BlockChain APi")
+                .description("Temco Si-BlockChain 과 연관된 API를 제공하는 페이지 입니다.")
                 .contact(new Contact("Temco", "https://temco.io/", "support@temco.io"))
                 .termsOfServiceUrl("https://temco.io/#/term")
                 .version("Ver 0.0.1")

@@ -7,6 +7,8 @@ import io.temco.guhada.blockchain.model.Transact;
 import io.temco.guhada.blockchain.model.request.ProductRequest;
 import io.temco.guhada.blockchain.model.request.TransactRequest;
 import io.temco.guhada.blockchain.model.response.BlockChainInfo;
+import io.temco.guhada.blockchain.model.response.ProductResponse;
+import io.temco.guhada.blockchain.model.response.TransactResponse;
 import io.temco.guhada.blockchain.repository.ApiUsageRepository;
 import io.temco.guhada.blockchain.repository.CompanyRepository;
 import io.temco.guhada.blockchain.repository.ProductRepository;
@@ -178,6 +180,6 @@ public class SmartContractServiceImpl implements SmartContractService {
         log.debug("input : " + ethTransaction.getResult().getInput());
         Transact transact = transactRepository.findByContractAddress(hashId);
         Product product = productRepository.getOne(transact.getProductId());
-        return new BlockChainInfo(product,transact);
+        return new BlockChainInfo(ProductResponse.of(product), TransactResponse.of(transact));
     }
 }
