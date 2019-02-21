@@ -31,13 +31,3 @@ spring:
   chain-url: "https://public-node.testnet.rsk.co:443"
   thymeleaf:
     cache: false
-
-server:
-  ssl:
-    keyStoreType: PKCS12
-    keyAlias: temcolab
-    useSelfCertificate: true
-    key-store-password: ENC(6HAKqcFfA411w3Q1uOAJeS24urhXr4Q5)
-  port: 8443
-  nonSecure:
-    port: 8080
