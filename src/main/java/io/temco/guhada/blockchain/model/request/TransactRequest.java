@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Data
 public class TransactRequest {
     private long productId;
-    private LocalDateTime transactTime;
     private String invoiceNumber;
     private String deliveryCode;
     private int temperature;

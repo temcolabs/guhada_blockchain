@@ -3,18 +3,15 @@ package io.temco.guhada.blockchain.model;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.time.LocalDate;
 
 @Data
-@Builder
 @Entity
 @Table(name="PRODUCT")
 public class Product {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="PRODUCT_ID")
     private long productId;
 
@@ -34,10 +31,10 @@ public class Product {
     private String certificate;
 
     @Column(name="REG_DATE")
-    private LocalDateTime regDate;
+    private LocalDate regDate;
 
     @Column(name="SALES_DATE")
-    private LocalDateTime salesDate;
+    private LocalDate salesDate;
 
     @Column(name="ORDER_NUMBER")
     private String orderNumber;

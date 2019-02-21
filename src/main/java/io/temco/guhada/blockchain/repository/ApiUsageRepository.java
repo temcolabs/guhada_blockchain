@@ -7,9 +7,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface ApiUsageRepository extends JpaRepository<ApiUsage,Long> {
 
-    ApiUsage findByApiLimitIdAndMonthAndDay(int apiLimitId, int month, int day);
+    ApiUsage findByCompanyIdAndMonthAndDay(int companyIdA, int month, int day);
 
-
-    @Query("select sum(USAGE_COUNT) from API_USAGE where API_LIMIT_ID = :apiLimitId AND MONTH = :month")
-    int sumMonthUsage(@Param("apiLimitId") int apiLimitId, @Param("month") int month );
+    @Query("select sum(usageCount) from ApiUsage where companyId = :companyId AND month = :month")
+    Integer sumMonthUsage(@Param("companyId") int companyId, @Param("month") int month );
 }

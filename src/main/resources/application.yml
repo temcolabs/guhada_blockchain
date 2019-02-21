@@ -12,9 +12,9 @@ spring:
   profiles: local
   datasource:
     driverClassName: 'com.mysql.jdbc.Driver'
-    url: jdbc:mysql://proto.temco.io:3306/TEMCO_PROTO?useSSL=false
-    username: "temco"
-    password: ENC(XzH77mapsUnGq1LaxOcggI0+E/k05R5i)
+    url: jdbc:mysql://poc-cluster.cluster-cytgq1fzvvht.ap-northeast-2.rds.amazonaws.com:3306/HOMEPAGE?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false
+    username: "devtemco"
+    password: "devTemco88!"
   jpa:
     properties:
       hibernate:

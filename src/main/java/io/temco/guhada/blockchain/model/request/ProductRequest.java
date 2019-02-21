@@ -2,21 +2,16 @@ package io.temco.guhada.blockchain.model.request;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 public class ProductRequest {
     private String productName;
-    private long companyId;
     private String productCode;
     private String category;
     private String certificate;
-    private LocalDateTime regDate;
-    private LocalDateTime salesDate;
+    private LocalDate regDate;
+    private LocalDate salesDate;
     private String orderNumber;
     private String boxSize;
 

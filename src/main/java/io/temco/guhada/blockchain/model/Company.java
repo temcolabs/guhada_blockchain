@@ -2,10 +2,7 @@ package io.temco.guhada.blockchain.model;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @Entity
@@ -13,9 +10,19 @@ import javax.persistence.Table;
 public class Company {
 
     @Id
-    @Column(name="TRANSACT_ID")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="COMPANY_ID")
     private int companyId;
 
     @Column(name = "COMPANY_NAME")
     private String companyName;
+
+    @Column(name="MONTH_LIMIT")
+    private long monthLimit;
+
+    @Column(name="DAY_LIMIT")
+    private long dayLimit;
+
+    @Column(name="API_TOKEN")
+    private String apiToken;
 }

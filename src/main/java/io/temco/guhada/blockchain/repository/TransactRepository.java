@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface TransactRepository extends JpaRepository<Transact,Long> {
 
-    List<Transact> findByTxHashIsNull();
+    List<Transact> findByContractAddressIsNull();
 
-    Transact findByTxHash(String txHash);
+    Transact findByContractAddress(String ContractAddress);
 }

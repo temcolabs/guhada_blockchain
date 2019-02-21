@@ -3,10 +3,7 @@ package io.temco.guhada.blockchain.model;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,6 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 public class Transact {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="TRANSACT_ID")
     private long transactId;
 
