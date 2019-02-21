@@ -1,5 +1,6 @@
 package io.temco.guhada.blockchain;
 
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

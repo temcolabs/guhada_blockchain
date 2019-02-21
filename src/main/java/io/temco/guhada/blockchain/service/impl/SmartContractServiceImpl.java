@@ -79,7 +79,7 @@ public class SmartContractServiceImpl implements SmartContractService {
         credentials = Credentials.create(ecKeyPair);
         log.info("My address: {}", credentials.getAddress());
 
-        BigInteger gasPrice = new BigInteger("300");
+        BigInteger gasPrice = new BigInteger("3");
         System.out.println("Using gas price of: " + gasPrice );
         transactSC = transactSC.load(contractAddress, web3j, credentials, gasPrice, Contract.GAS_LIMIT);
 
