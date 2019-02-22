@@ -23,6 +23,7 @@ public class BlockChainController {
 
     @PostMapping("/generateQrCode")
     @ApiOperation(value = "generateQrCode", notes = "상품의 정보를 저장하고 상품을 스캔할 때 사용할 QRCode를 생성하기위한 값을 제공하는 API")
+    @ResponseBody
     public long generateQrCode(@RequestHeader(value="apiToken")String apiToken,
                                @ApiParam(name = "ProductRequest", value = "등록할 사용자의 정보", required = true)
                                @RequestBody ProductRequest productRequest) throws Exception {
@@ -31,6 +32,7 @@ public class BlockChainController {
 
     @PostMapping("/uploadToBlockChain")
     @ApiOperation(value = "uploadToBlockChain", notes = "등록된 상품의 물류정보를 블록체인에 upload 한 후에 그 Transaction Hash값을 제공해주는 API")
+    @ResponseBody
     public String uploadToBlockChain(@RequestHeader(value="apiToken")String apiToken,
                                      @ApiParam(name = "transact", required = true)
                                      @RequestBody TransactRequest transactRequest) throws Exception {
@@ -39,6 +41,7 @@ public class BlockChainController {
 
     @GetMapping("/getBlockChainInfo/{hashId}")
     @ApiOperation(value = "getBlockChainInfo", notes = "Transaction Hash 값을 이용하여 해당하는 물류정보와 상품정보를 제공해주는 API")
+    @ResponseBody
     public BlockChainInfo getBlockChainInfo(@RequestHeader(value="apiToken")String apiToken,
                                             @ApiParam(name = "hashId", required = true, type = "String")
                                             @PathVariable(value="hashId") String hashId) throws Exception {

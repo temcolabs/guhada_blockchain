@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name="TRANSACT")
-@Builder
 public class Transact {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

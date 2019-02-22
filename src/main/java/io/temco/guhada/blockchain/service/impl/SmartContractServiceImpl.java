@@ -79,9 +79,9 @@ public class SmartContractServiceImpl implements SmartContractService {
         credentials = Credentials.create(ecKeyPair);
         log.info("My address: {}", credentials.getAddress());
 
-        BigInteger gasPrice = new BigInteger("3");
+        BigInteger gasPrice = new BigInteger("30000");
         System.out.println("Using gas price of: " + gasPrice );
-        transactSC = transactSC.load(contractAddress, web3j, credentials, gasPrice, Contract.GAS_LIMIT);
+        transactSC = transactSC.load(contractAddress, web3j, credentials, gasPrice, new BigInteger("400000"));
 
     }
 
@@ -149,13 +149,12 @@ public class SmartContractServiceImpl implements SmartContractService {
         apiUsage.setUsageCount(apiUsage.getUsageCount() + 1);
         apiUsageRepository.save(apiUsage);
 
-        Transact transact = Transact.builder()
-                .productId(transactRequest.getProductId())
-                .transactTime(LocalDateTime.now())
-                .invoiceNumber(transactRequest.getInvoiceNumber())
-                .deliveryCode(transactRequest.getDeliveryCode())
-                .temperature(transactRequest.getTemperature())
-                .build();
+        Transact transact = new Transact();
+        transact.setProductId(transactRequest.getProductId());
+        transact.setTransactTime(LocalDateTime.now());
+        transact.setInvoiceNumber(transactRequest.getInvoiceNumber());
+        transact.setDeliveryCode(transactRequest.getDeliveryCode());
+        transact.setTemperature(transactRequest.getTemperature());
 
         transact.setHash(HashUtils.getSha(transact.toString()));
         transact = transactRepository.save(transact);
@@ -164,7 +163,9 @@ public class SmartContractServiceImpl implements SmartContractService {
 
     private String transactInsert(Transact transact) throws Exception {
         String contractAddress = transactSC.insert(BigInteger.valueOf(transact.getTransactId()),
-                BigInteger.valueOf(transact.getProductId()), HashUtils.getSha(transact.toString())).send().getTransactionHash();
+                BigInteger.valueOf(transact.getProductId()), transact.getHash()).send().getTransactionHash();
+//        String contractAddress = transactSC.insert(BigInteger.valueOf(transact.getTransactId()),
+//                BigInteger.valueOf(transact.getProductId()), transact.getHash()).send().getTransactionHash();
         transact.setContractAddress(contractAddress);
         transactRepository.save(transact);
         return contractAddress;
