@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Data
 @ApiModel(value = "ProductRequest", description = "상품 생성시 parameter 모델", parent = BaseEntity.class)
-public class ProductRequest extends BaseEntity{
+public class ProductRequest{
     @ApiModelProperty(name = "productName", value = "상품명", required = true, example = "소고기")
     private String productName;
     @ApiModelProperty(name = "productCode", value = "상품 코드", example = "cow-meat-44231")
