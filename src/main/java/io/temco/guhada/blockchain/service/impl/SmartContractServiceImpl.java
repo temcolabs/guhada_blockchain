@@ -16,17 +16,18 @@ import io.temco.guhada.blockchain.repository.TransactRepository;
 import io.temco.guhada.blockchain.service.SmartContractService;
 import io.temco.guhada.blockchain.smartcontract.TransactSC;
 import io.temco.guhada.blockchain.util.AES256Util;
+import io.temco.guhada.blockchain.util.BarcodeUtil;
 import io.temco.guhada.blockchain.util.HashUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthTransaction;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.Contract;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -50,6 +51,9 @@ public class SmartContractServiceImpl implements SmartContractService {
 
     @Autowired
     private ApiUsageRepository apiUsageRepository;
+
+    @Autowired
+    private BarcodeUtil barcodeUtil;
 
     @Value("${spring.private-key}")
     private String privateKey;
@@ -92,7 +96,7 @@ public class SmartContractServiceImpl implements SmartContractService {
     }
 
     @Override
-    public long generateQrCode(String apiToken, ProductRequest productRequest) throws Exception {
+    public String generateQrCode(String apiToken, ProductRequest productRequest) throws Exception {
         Company company = companyRepository.findByApiToken(apiToken);
         if(company == null){
             throw new Exception("apitoken error");
@@ -108,7 +112,11 @@ public class SmartContractServiceImpl implements SmartContractService {
         product.setSalesDate(productRequest.getSalesDate());
         product.setOrderNumber(productRequest.getOrderNumber());
         product.setBoxSize(productRequest.getBoxSize());
-        return productRepository.save(product).getProductId();
+        String productId =  productRepository.save(product).getProductId() + "";
+        String barcodeUrl = barcodeUtil.generateQRCodeImageToS3Url(productId, product.getCompanyId()+ "_" + productId, 128, 128);
+        product.setQrCodeUrl(barcodeUrl);
+        productRepository.save(product);
+        return barcodeUrl;
 
     }
 

@@ -10,11 +10,19 @@ spring:
 ---
 spring:
   profiles: local
+  aws:
+    s3config:
+      clientRegion: "ap-northeast-1"
+      bucketName: "poc.online-luxury-market"
+      accessKey: ENC(D5Jfwx2R2/8p+KcyhKuhVwk34aMmX/99z1+M+af1Xa4eFGdY8RvZeK38gYcR5slO)
+      secretKey: ENC(oodGhHNp1Ukw7/4uauYA5ogdVF3DN14JE84MM8TaJW9WuXFzu7e5vaoyl/Fi2WKBrtTt12cqP95PyyObRgosQ9FPR3fHs8b8)
+      folderName: "blockchain"
+      fileFormat: "png"
   datasource:
     driverClassName: 'com.mysql.jdbc.Driver'
     url: jdbc:mysql://poc-cluster.cluster-cytgq1fzvvht.ap-northeast-2.rds.amazonaws.com:3306/HOMEPAGE?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false
     username: "devtemco"
-    password: "devTemco88!"
+    password: ENC(oMYEgzh8XSin/OnlnRDMIQyTOkYcDVZvSlvXucf5FM8c+tyTNeRi4A==)
   jpa:
     properties:
       hibernate:
@@ -31,3 +39,8 @@ spring:
   chain-url: "https://public-node.testnet.rsk.co:443"
   thymeleaf:
     cache: false
+
+
+jasypt:
+  encryptor:
+   bean: jasyptStringEncrptor

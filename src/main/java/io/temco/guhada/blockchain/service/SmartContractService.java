@@ -7,7 +7,7 @@ import io.temco.guhada.blockchain.model.response.BlockChainInfo;
 import java.io.IOException;
 
 public interface SmartContractService {
-    long generateQrCode(String apiToken,ProductRequest blockChainInfo) throws Exception;
+    String generateQrCode(String apiToken,ProductRequest blockChainInfo) throws Exception;
 
     String uploadToBlockchain(String apiToken,TransactRequest transactRequest) throws Exception;
 

@@ -6,11 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.PropertySource;
 
 
 @Configuration
-@PropertySource("classpath:application.yml")
 public class DatasourceConfiguration {
 
     @Value("${spring.datasource.password}")
@@ -18,7 +16,6 @@ public class DatasourceConfiguration {
 
     @Bean
     @Primary
-    @ConfigurationProperties("spring.datasource")
     public DataSourceProperties dataSourceProperties() {
         DataSourceProperties properties = new DataSourceProperties();
         properties.setPassword(datasourcePassword);

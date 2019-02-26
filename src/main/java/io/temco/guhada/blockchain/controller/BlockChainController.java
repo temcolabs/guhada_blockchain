@@ -24,7 +24,7 @@ public class BlockChainController {
     @PostMapping("/generateQrCode")
     @ApiOperation(value = "generateQrCode", notes = "상품의 정보를 저장하고 상품을 스캔할 때 사용할 QRCode를 생성하기위한 값을 제공하는 API")
     @ResponseBody
-    public long generateQrCode(@RequestHeader(value="apiToken")String apiToken,
+    public String generateQrCode(@RequestHeader(value="apiToken")String apiToken,
                                @ApiParam(name = "ProductRequest", value = "등록할 사용자의 정보", required = true)
                                @RequestBody ProductRequest productRequest) throws Exception {
         return smartContractService.generateQrCode(apiToken,productRequest);

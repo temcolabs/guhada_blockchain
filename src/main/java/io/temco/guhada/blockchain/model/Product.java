@@ -42,4 +42,7 @@ public class Product {
     @Column(name="BOX_SIZE")
     private String boxSize;
 
+    @Column(name="QR_CODE_URL")
+    private String qrCodeUrl;
+
 }
