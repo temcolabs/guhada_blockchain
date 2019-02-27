@@ -4,11 +4,11 @@
 		"inputs": [
 			{
 				"name": "transactId",
-				"type": "uint32"
+				"type": "uint256"
 			},
 			{
 				"name": "productId",
-				"type": "uint32"
+				"type": "uint256"
 			},
 			{
 				"name": "hash",
@@ -25,15 +25,15 @@
 		"constant": true,
 		"inputs": [
 			{
-				"name": "productId",
-				"type": "uint32"
+				"name": "transactId",
+				"type": "uint256"
 			}
 		],
-		"name": "getByProduct",
+		"name": "getHash",
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint256[]"
+				"type": "string"
 			}
 		],
 		"payable": false,
@@ -44,15 +44,15 @@
 		"constant": true,
 		"inputs": [
 			{
-				"name": "transactId",
-				"type": "uint32"
+				"name": "productId",
+				"type": "uint256"
 			}
 		],
-		"name": "getHash",
+		"name": "getByProduct",
 		"outputs": [
 			{
 				"name": "",
-				"type": "string"
+				"type": "uint256[]"
 			}
 		],
 		"payable": false,

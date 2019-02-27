@@ -15,6 +15,8 @@ public class TransactResponse extends BaseEntity {
     private int temperature;
     private String hash;
     private String contractAddress;
+    private double longitude;
+    private double latitude;
 
     public static TransactResponse of(Transact transact){
         TransactResponse transactResponse = new TransactResponse();
@@ -25,6 +27,8 @@ public class TransactResponse extends BaseEntity {
         transactResponse.temperature = transact.getTemperature();
         transactResponse.hash = transact.getHash();
         transactResponse.contractAddress = transact.getContractAddress();
+        transactResponse.longitude = transact.getLongitude();
+        transactResponse.latitude = transact.getLatitude();
         return transactResponse;
     }
 }

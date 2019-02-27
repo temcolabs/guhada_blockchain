@@ -1,9 +1,11 @@
 package io.temco.guhada.blockchain.model.response;
 
 import io.temco.guhada.blockchain.model.BaseEntity;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class BlockChainInfo extends BaseEntity {
 
     private ProductResponse productResponse;

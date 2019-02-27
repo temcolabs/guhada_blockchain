@@ -3,13 +3,16 @@ package io.temco.guhada.blockchain.model.request;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.temco.guhada.blockchain.model.BaseEntity;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Data
-@ApiModel(value = "ProductRequest", description = "상품 생성시 parameter 모델", parent = BaseEntity.class)
-public class ProductRequest{
+
+@Setter
+@Getter
+@ApiModel(value = "GenerateQrCodeRequest", description = "상품 생성시 parameter 모델")
+public class GenerateQrCodeRequest {
     @ApiModelProperty(name = "productName", value = "상품명", required = true, example = "소고기")
     private String productName;
     @ApiModelProperty(name = "productCode", value = "상품 코드", example = "cow-meat-44231")
@@ -26,5 +29,15 @@ public class ProductRequest{
     private String orderNumber;
     @ApiModelProperty(name = "boxSize", value = "박스 크기", example = "small")
     private String boxSize;
+    @ApiModelProperty(name = "invoiceNumber", value = "운송장 번호", required = true, example = "5522135782")
+    private String invoiceNumber;
+    @ApiModelProperty(name = "deliveryCode", value = "운송회사 코드", required = true, example = "04")
+    private String deliveryCode;
+    @ApiModelProperty(name = "temperature", value = "상품 취급시 온도", required = true, example = "20")
+    private int temperature;
+    @ApiModelProperty(name = "longitude", value = "경도", required = true, example = "127.027666")
+    private double longitude;
+    @ApiModelProperty(name = "latitude", value = "위도", required = true, example = "37.497904")
+    private double latitude;
 
 }

@@ -35,7 +35,7 @@ spring:
   application:
     name: datastorage
   private-key: "p05pWLrQ3Ms6ePYnkHmZM1WdWwvjq0m/RG2/Dd/UjGxcKIlRYN7cY3FeYPT2wgnjRSfGD6ttq+RuDDJbsz1FXmFu9zM1LOQ2MfYp7JPB20Y="
-  contract-address: "0x41f41b121b5e04b66bb6143a412bce731adca0e7"
+  contract-address: "0x85bf8380efb2f1154c58f83cf18dbc7f36617a5a"
   chain-url: "https://public-node.testnet.rsk.co:443"
   thymeleaf:
     cache: false

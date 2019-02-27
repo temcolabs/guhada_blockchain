@@ -3,9 +3,12 @@ package io.temco.guhada.blockchain.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.temco.guhada.blockchain.model.request.ProductRequest;
+import io.temco.guhada.blockchain.model.request.CompanyRequest;
+import io.temco.guhada.blockchain.model.request.GenerateQrCodeRequest;
 import io.temco.guhada.blockchain.model.request.TransactRequest;
 import io.temco.guhada.blockchain.model.response.BlockChainInfo;
+import io.temco.guhada.blockchain.model.response.CompanyResponse;
+import io.temco.guhada.blockchain.model.response.GenerateQrCodeResponse;
 import io.temco.guhada.blockchain.service.SmartContractService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +27,10 @@ public class BlockChainController {
     @PostMapping("/generateQrCode")
     @ApiOperation(value = "generateQrCode", notes = "상품의 정보를 저장하고 상품을 스캔할 때 사용할 QRCode를 생성하기위한 값을 제공하는 API")
     @ResponseBody
-    public String generateQrCode(@RequestHeader(value="apiToken")String apiToken,
-                               @ApiParam(name = "ProductRequest", value = "등록할 사용자의 정보", required = true)
-                               @RequestBody ProductRequest productRequest) throws Exception {
-        return smartContractService.generateQrCode(apiToken,productRequest);
+    public GenerateQrCodeResponse generateQrCode(@RequestHeader(value="apiToken")String apiToken,
+                                                 @ApiParam(name = "GenerateQrCodeRequest", value = "등록할 제품의 정보", required = true)
+                               @RequestBody GenerateQrCodeRequest generateQrCodeRequest) throws Exception {
+        return smartContractService.generateQrCode(apiToken, generateQrCodeRequest);
     }
 
     @PostMapping("/uploadToBlockChain")
@@ -46,6 +49,13 @@ public class BlockChainController {
                                             @ApiParam(name = "hashId", required = true, type = "String")
                                             @PathVariable(value="hashId") String hashId) throws Exception {
         return smartContractService.getBlockChainInfo(apiToken,hashId);
+    }
+
+    @PostMapping("/registerCompany")
+    @ApiOperation(value = "registerCompany", notes = "API 사용하기 위한 업체를 등록하는 API")
+    @ResponseBody
+    public CompanyResponse registerCompany(@ApiParam(name = "companyRequest", required = true)CompanyRequest companyRequest) throws Exception {
+        return smartContractService.registerCompany(companyRequest);
     }
 
 }

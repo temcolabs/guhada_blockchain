@@ -18,6 +18,9 @@ public class Transact {
     @Column(name="PRODUCT_ID")
     private long productId;
 
+    @Column(name="COMPANY_ID")
+    private long companyId;
+
     @Column(name="TRANSACT_TIME")
     private LocalDateTime transactTime;
 
@@ -35,6 +38,12 @@ public class Transact {
 
     @Column(name="CONTRACT_ADDRESS")
     private String contractAddress;
+
+    @Column(name="LONGITUDE")
+    private double longitude;
+
+    @Column(name="LATITUDE")
+    private double latitude;
     // pdf 추후
 
     @Override
@@ -42,10 +51,13 @@ public class Transact {
         return "Transact{" +
                 "transactId=" + transactId +
                 ", productId=" + productId +
+                ", companyId=" + companyId +
                 ", transactTime=" + transactTime +
                 ", invoiceNumber='" + invoiceNumber +
                 ", temperature=" + temperature +
                 ", deliveryCode=" + deliveryCode +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
                 '}';
     }
 }

@@ -25,4 +25,7 @@ public class Company {
 
     @Column(name="API_TOKEN")
     private String apiToken;
+
+    @Column(name="CATEGORY")
+    private String category;
 }
