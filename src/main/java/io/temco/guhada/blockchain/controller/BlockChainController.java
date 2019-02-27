@@ -53,7 +53,7 @@ public class BlockChainController {
     }
 
     @PostMapping("/registerCompany")
-    @ApiOperation(value = "registerCompany", notes = "API 사용하기 위한 업체를 등록하는 API")
+    @ApiOperation(value = "registerCompany", notes = "Temco 의 blockchian API를 사용하기 위한 회사를 등록하는 API")
     @ResponseBody
     public CompanyResponse registerCompany(@ApiParam(name = "companyRequest", required = true)CompanyRequest companyRequest) throws Exception {
         return smartContractService.registerCompany(companyRequest);

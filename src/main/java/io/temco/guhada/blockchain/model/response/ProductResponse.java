@@ -2,11 +2,13 @@ package io.temco.guhada.blockchain.model.response;
 
 import io.temco.guhada.blockchain.model.BaseEntity;
 import io.temco.guhada.blockchain.model.Product;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 public class ProductResponse extends BaseEntity {
     private String productName;
     private String productCode;
