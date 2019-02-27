@@ -9,6 +9,7 @@ import io.temco.guhada.blockchain.model.request.TransactRequest;
 import io.temco.guhada.blockchain.model.response.BlockChainInfo;
 import io.temco.guhada.blockchain.model.response.CompanyResponse;
 import io.temco.guhada.blockchain.model.response.GenerateQrCodeResponse;
+import io.temco.guhada.blockchain.model.response.UploadToBlockchainResponse;
 import io.temco.guhada.blockchain.service.SmartContractService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,8 @@ public class BlockChainController {
     @PostMapping("/uploadToBlockChain")
     @ApiOperation(value = "uploadToBlockChain", notes = "등록된 상품의 물류정보를 블록체인에 upload 한 후에 그 Transaction Hash값을 제공해주는 API")
     @ResponseBody
-    public String uploadToBlockChain(@RequestHeader(value="apiToken")String apiToken,
-                                     @ApiParam(name = "transact", required = true)
+    public UploadToBlockchainResponse uploadToBlockChain(@RequestHeader(value="apiToken")String apiToken,
+                                                         @ApiParam(name = "transact", required = true)
                                      @RequestBody TransactRequest transactRequest) throws Exception {
         return smartContractService.uploadToBlockchain(apiToken, transactRequest);
     }

@@ -71,7 +71,7 @@ public class SmartContractServiceImpl implements SmartContractService {
     private TransactSC transactSC;
 
     private Credentials credentials;
-    
+
     @PostConstruct
     private void initWeb3j() throws java.io.IOException, GeneralSecurityException {
         web3j = Web3j.build(new HttpService(chianUrl));
@@ -107,7 +107,7 @@ public class SmartContractServiceImpl implements SmartContractService {
         TransactRequest transactRequest = TransactRequest.of(product.getProductId(), generateQrCodeRequest);
         Transact transact = transactInsert(transactRequest, company);
         GenerateQrCodeResponse generateQrCodeResponse = new GenerateQrCodeResponse();
-        generateQrCodeResponse.setContractAddress(blockChainTransact(transact));
+        generateQrCodeResponse.setContractAddress(blockChainTransact(transact).getContractAddress());
         generateQrCodeResponse.setProductId(product.getProductId());
         generateQrCodeResponse.setQrCode(product.getQrCodeUrl());
         return generateQrCodeResponse;
@@ -115,7 +115,7 @@ public class SmartContractServiceImpl implements SmartContractService {
     }
 
     @Override
-    public String uploadToBlockchain(String apiToken,TransactRequest transactRequest) throws Exception {
+    public UploadToBlockchainResponse uploadToBlockchain(String apiToken,TransactRequest transactRequest) throws Exception {
         Company company = companyRepository.findByApiToken(apiToken);
         if(company == null){
             throw new Exception("apitoken error");
@@ -128,7 +128,7 @@ public class SmartContractServiceImpl implements SmartContractService {
         apiLimitCheck(company);
 
         Transact transact = transactInsert(transactRequest, company);
-        return blockChainTransact(transact);
+        return UploadToBlockchainResponse.of(blockChainTransact(transact));
     }
 
 
@@ -220,11 +220,10 @@ public class SmartContractServiceImpl implements SmartContractService {
         return transact;
     }
 
-    private String blockChainTransact(Transact transact) throws Exception {
+    private Transact blockChainTransact(Transact transact) throws Exception {
         String contractAddress = transactSC.insert(BigInteger.valueOf(transact.getTransactId()),
                 BigInteger.valueOf(transact.getProductId()), transact.getHash()).send().getTransactionHash();
         transact.setContractAddress(contractAddress);
-        transactRepository.save(transact);
-        return contractAddress;
+        return transactRepository.save(transact);
     }
 }
