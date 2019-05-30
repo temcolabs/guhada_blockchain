@@ -73,12 +73,11 @@ public class SmartContractServiceImpl implements SmartContractService {
     private Credentials credentials;
 
     @PostConstruct
-    private void initWeb3j() throws java.io.IOException, GeneralSecurityException {
+    private void initWeb3j() throws java.io.IOException {
         web3j = Web3j.build(new HttpService(chianUrl));
         log.info("Connected to baobab.klaytn client version: {}", web3j.web3ClientVersion().send().getWeb3ClientVersion());
 
-        AES256Util aes256Util = new AES256Util();
-        credentials = Credentials.create(aes256Util.decrypt(privateKey));
+        credentials = Credentials.create(privateKey);
         ECKeyPair ecKeyPair = ECKeyPair.create(new BigInteger(credentials.getEcKeyPair().getPrivateKey().toString()) );
         credentials = Credentials.create(ecKeyPair);
         log.info("My address: {}", credentials.getAddress());
