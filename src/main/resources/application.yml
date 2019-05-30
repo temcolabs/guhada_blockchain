@@ -34,7 +34,7 @@ spring:
       ddl-auto: none
   application:
     name: datastorage
-  private-key: "0xb52673131d1f9c35b641a037682b1d0ebd6ad9f176aa41b45f60545a2f8b1a9a"
+  private-key: "4Kl5LtVflZLDeogkZg367vIjrgsz+1NexOipiY8QAhk8L9x0KESHOJe6wtHwecGRTqWFPHkIq4R8NLdMhljhwsSJngRmPYVoIOmlUL139cA="
   contract-address: "0x57c71a5da3811934768A8aBF5FEE3cfae3D3E31A"
   chain-url: "https://api.baobab.klaytn.net:8651/"
   thymeleaf:
