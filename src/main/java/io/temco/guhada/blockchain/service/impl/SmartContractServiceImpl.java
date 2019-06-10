@@ -28,6 +28,7 @@ import org.web3j.crypto.ECKeyPair;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthTransaction;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.gas.DefaultGasProvider;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -75,18 +76,23 @@ public class SmartContractServiceImpl implements SmartContractService {
     @PostConstruct
     private void initWeb3j() throws java.io.IOException, GeneralSecurityException {
         web3j = Web3j.build(new HttpService(chianUrl));
-        log.info("Connected to baobab.klaytn client version: {}", web3j.web3ClientVersion().send().getWeb3ClientVersion());
-
+        web3j = Web3j.build(new HttpService("https://ropsten.infura.io/v3/67b3ebcb7a574122967fb41c7a968b90"));
+//        log.info("Connected to baobab.klaytn client version: {}", web3j.web3ClientVersion().send().getWeb3ClientVersion());
+        log.info(web3j.ethGasPrice().send().getGasPrice().toString());
 
         AES256Util aes256Util = new AES256Util();
         credentials = Credentials.create(aes256Util.decrypt(privateKey));
+
         ECKeyPair ecKeyPair = ECKeyPair.create(new BigInteger(credentials.getEcKeyPair().getPrivateKey().toString()) );
         credentials = Credentials.create(ecKeyPair);
         log.info("My address: {}", credentials.getAddress());
 
-        BigInteger gasPrice = new BigInteger("30000");
+        BigInteger gasPrice = new BigInteger("250000000000");
         System.out.println("Using gas price of: " + gasPrice );
-        transactSC = transactSC.load(contractAddress, web3j, credentials, gasPrice, new BigInteger("400000"));
+        String contractAddressTest = "0x180c59af06a850366ff16d550bf3f21d23996470";
+//        transactSC = transactSC.load(contractAddress, web3j, credentials, gasPrice, new BigInteger("3"));
+        transactSC = transactSC.load(contractAddressTest, web3j, credentials, new DefaultGasProvider());
+        log.info(transactSC.toString());
 
     }
 

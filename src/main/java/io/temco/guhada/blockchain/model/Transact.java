@@ -1,6 +1,5 @@
 package io.temco.guhada.blockchain.model;
 
-import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;

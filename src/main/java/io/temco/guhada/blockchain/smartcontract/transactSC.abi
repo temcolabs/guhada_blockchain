@@ -4,11 +4,11 @@
 		"inputs": [
 			{
 				"name": "transactId",
-				"type": "uint256"
+				"type": "int256"
 			},
 			{
 				"name": "productId",
-				"type": "uint256"
+				"type": "int256"
 			},
 			{
 				"name": "hash",
@@ -26,7 +26,7 @@
 		"inputs": [
 			{
 				"name": "transactId",
-				"type": "uint256"
+				"type": "int256"
 			}
 		],
 		"name": "getHash",
@@ -45,14 +45,14 @@
 		"inputs": [
 			{
 				"name": "productId",
-				"type": "uint256"
+				"type": "int256"
 			}
 		],
 		"name": "getByProduct",
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint256[]"
+				"type": "int256[]"
 			}
 		],
 		"payable": false,

@@ -35,7 +35,7 @@ spring:
   application:
     name: datastorage
   private-key: "4Kl5LtVflZLDeogkZg367vIjrgsz+1NexOipiY8QAhk8L9x0KESHOJe6wtHwecGRTqWFPHkIq4R8NLdMhljhwsSJngRmPYVoIOmlUL139cA="
-  contract-address: "0x57c71a5da3811934768A8aBF5FEE3cfae3D3E31A"
+  contract-address: "0x9821e375e77631392F7687661C6CE5354DA28d3B"
   chain-url: "https://api.baobab.klaytn.net:8651/"
   thymeleaf:
     cache: false

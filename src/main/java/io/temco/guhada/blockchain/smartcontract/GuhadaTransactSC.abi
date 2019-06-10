@@ -1,0 +1,62 @@
+[
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "guhadaTransactId",
+				"type": "int256"
+			}
+		],
+		"name": "getHash",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "serialId",
+				"type": "string"
+			}
+		],
+		"name": "getBySerialId",
+		"outputs": [
+			{
+				"name": "",
+				"type": "int256[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "guhadaTransactId",
+				"type": "int256"
+			},
+			{
+				"name": "serialId",
+				"type": "string"
+			},
+			{
+				"name": "hash",
+				"type": "string"
+			}
+		],
+		"name": "insert",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]
