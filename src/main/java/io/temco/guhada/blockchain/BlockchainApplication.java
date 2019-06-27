@@ -10,7 +10,6 @@ public class BlockchainApplication {
 
     private static final String NAME = BlockchainApplication.class.getSimpleName();
 
-
     public static void main(String[] args) {
         System.setProperty("jasypt.encryptor.password", "t3mco@dminUser");
         log.info("{} starting...", NAME);

@@ -38,6 +38,7 @@ dependencies {
 
     // smart contract
     compile group: 'org.web3j', name: 'core', version: '4.3.1'
+    compile files('src/main/java/libs/caverj-all-exclude-0.8.0.jar')
 
     // swagger
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
