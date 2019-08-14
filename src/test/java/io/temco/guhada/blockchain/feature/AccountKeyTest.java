@@ -1,7 +1,7 @@
 package io.temco.guhada.blockchain.feature;
 
-import org.caverj.crpyto.KlayCredentials;
-import org.caverj.tx.account.*;
+import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.tx.account.*;
 import org.junit.Test;
 import org.web3j.utils.Numeric;
 
@@ -34,9 +34,9 @@ public class AccountKeyTest {
         assertEquals("0xf8cc7c3813ad23817466b1802ee805ee417001fcce9376ab8728c92dd8ea0a6b",
                 Numeric.toHexStringWithPrefix(credentials.getEcKeyPair().getPrivateKey()));
         assertEquals("0xdbac81e8486d68eac4e6ef9db617f7fbd79a04a3b323c982a09cdfc61f0ae0e8",
-                accountKeyPublic.getPublicKeyX());
+                accountKeyPublic.getX());
         assertEquals("0x906d7170ba349c86879fb8006134cbf57bda9db9214a90b607b6b4ab57fc026e",
-                accountKeyPublic.getPublicKeyY());
+                accountKeyPublic.getY());
 
         String rawTransaction = Numeric.toHexString(accountKeyPublic.toRlp());
 
@@ -100,17 +100,17 @@ public class AccountKeyTest {
         assertEquals(AccountKey.Type.MULTISIG, multiSig.getType());
         assertEquals(threshold, multiSig.getThreshold());
         assertEquals(4, multiSig.getWeightedPublicKeys().size());
-        assertEquals(key0.getAccountKeyPublic().getPublicKeyX(), multiSig.getWeightedPublicKeys().get(0).getAccountKeyPublic().getPublicKeyX());
-        assertEquals(key0.getAccountKeyPublic().getPublicKeyY(), multiSig.getWeightedPublicKeys().get(0).getAccountKeyPublic().getPublicKeyY());
+        assertEquals(key0.getKey().getPublicKey(), multiSig.getWeightedPublicKeys().get(0).getKey().getX());
+        assertEquals(key0.getKey().getY(), multiSig.getWeightedPublicKeys().get(0).getKey().getY());
         assertEquals(key0.getWeight(), multiSig.getWeightedPublicKeys().get(0).getWeight());
-        assertEquals(key1.getAccountKeyPublic().getPublicKeyX(), multiSig.getWeightedPublicKeys().get(1).getAccountKeyPublic().getPublicKeyX());
-        assertEquals(key1.getAccountKeyPublic().getPublicKeyY(), multiSig.getWeightedPublicKeys().get(1).getAccountKeyPublic().getPublicKeyY());
+        assertEquals(key1.getKey().getX(), multiSig.getWeightedPublicKeys().get(1).getKey().getX());
+        assertEquals(key1.getKey().getY(), multiSig.getWeightedPublicKeys().get(1).getKey().getY());
         assertEquals(key1.getWeight(), multiSig.getWeightedPublicKeys().get(1).getWeight());
-        assertEquals(key2.getAccountKeyPublic().getPublicKeyX(), multiSig.getWeightedPublicKeys().get(2).getAccountKeyPublic().getPublicKeyX());
-        assertEquals(key2.getAccountKeyPublic().getPublicKeyY(), multiSig.getWeightedPublicKeys().get(2).getAccountKeyPublic().getPublicKeyY());
+        assertEquals(key2.getKey().getX(), multiSig.getWeightedPublicKeys().get(2).getKey().getX());
+        assertEquals(key2.getKey().getY(), multiSig.getWeightedPublicKeys().get(2).getKey().getY());
         assertEquals(key2.getWeight(), multiSig.getWeightedPublicKeys().get(2).getWeight());
-        assertEquals(key3.getAccountKeyPublic().getPublicKeyX(), multiSig.getWeightedPublicKeys().get(3).getAccountKeyPublic().getPublicKeyX());
-        assertEquals(key3.getAccountKeyPublic().getPublicKeyY(), multiSig.getWeightedPublicKeys().get(3).getAccountKeyPublic().getPublicKeyY());
+        assertEquals(key3.getKey().getY(), multiSig.getWeightedPublicKeys().get(3).getKey().getX());
+        assertEquals(key3.getKey().getY(), multiSig.getWeightedPublicKeys().get(3).getKey().getY());
         assertEquals(key3.getWeight(), multiSig.getWeightedPublicKeys().get(3).getWeight());
     }
 
@@ -148,8 +148,11 @@ public class AccountKeyTest {
                 "0xc8785266510368d9372badd4c7f4a94b692e82ba74e0b5e26b34558b0f081447",
                 "0x94c27901465af0a703859ab47f8ae17e54aaba453b7cde5a6a9e4a32d45d72b2"
         );
-
-        String rawTransaction = Numeric.toHexString(AccountKeyRoleBased.create(roleTransaction, roleUpdate, roleFeePayer).toRlp());
+        List<AccountKey> accountKeyList1 = new ArrayList<>();
+        accountKeyList1.add(roleTransaction);
+        accountKeyList1.add(roleUpdate);
+        accountKeyList1.add(roleFeePayer);
+        String rawTransaction = Numeric.toHexString(AccountKeyRoleBased.create(accountKeyList1).toRlp());
         assertEquals("0x05f898a302a103e4a01407460c1c03ac0c82fd84f303a699b210c0b054f4aff72ff7dcdf01512db84e04f84b02f848e301a103e4a01407460c1c03ac0c82fd84f303a699b210c0b054f4aff72ff7dcdf01512de301a10336f6355f5b532c3c1606f18fa2be7a16ae200c5159c8031dd25bfa389a4c9c06a302a102c8785266510368d9372badd4c7f4a94b692e82ba74e0b5e26b34558b0f081447"
                 , rawTransaction);
 
@@ -162,11 +165,12 @@ public class AccountKeyTest {
         AccountKeyNil accountKeyNil = AccountKeyNil.create();
         AccountKeyFail accountKeyFail = AccountKeyFail.create();
         AccountKeyLegacy accountKeyLegacy = AccountKeyLegacy.create();
-        AccountKeyRoleBased newRoleBased = AccountKeyRoleBased.create(
-                accountKeyNil,
-                accountKeyFail,
-                accountKeyLegacy
-        );
+
+        List<AccountKey> accountKeyList2 = new ArrayList<>();
+        accountKeyList2.add(accountKeyNil);
+        accountKeyList2.add(accountKeyFail);
+        accountKeyList2.add(accountKeyLegacy);
+        AccountKeyRoleBased newRoleBased = AccountKeyRoleBased.create(accountKeyList2);
         AccountKeyRoleBased decodeRoleBased2
                 = AccountKeyRoleBased.decodeFromRlp(Numeric.toHexString(newRoleBased.toRlp()));
         assertEquals(AccountKey.Type.NIL, decodeRoleBased2.getRoleTransaction().getType());

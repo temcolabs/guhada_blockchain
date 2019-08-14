@@ -1,7 +1,7 @@
 package io.temco.guhada.blockchain.feature;
 
-import org.caverj.crpyto.KlayCredentials;
-import org.caverj.wallet.KlayWalletUtils;
+import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.wallet.KlayWalletUtils;
 import org.junit.Test;
 
 import java.io.File;

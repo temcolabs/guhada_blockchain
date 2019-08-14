@@ -1,14 +1,14 @@
 package io.temco.guhada.blockchain.feature;
 
-import org.caverj.Caverj;
-import org.caverj.crpyto.KlayCredentials;
-import org.caverj.fee.FeePayerManager;
-import org.caverj.methods.response.KlayTransactionReceipt;
-import org.caverj.tx.model.ValueTransferTransaction;
-import org.caverj.tx.manager.PollingTransactionReceiptProcessor;
-import org.caverj.tx.type.TxTypeFeeDelegatedValueTransfer;
-import org.caverj.utils.ChainId;
-import org.caverj.utils.Convert;
+import com.klaytn.caver.Caver;
+import com.klaytn.caver.crpyto.KlayCredentials;
+import com.klaytn.caver.fee.FeePayerManager;
+import com.klaytn.caver.methods.response.KlayTransactionReceipt;
+import com.klaytn.caver.tx.manager.PollingTransactionReceiptProcessor;
+import com.klaytn.caver.tx.model.ValueTransferTransaction;
+import com.klaytn.caver.tx.type.TxTypeFeeDelegatedValueTransfer;
+import com.klaytn.caver.utils.ChainId;
+import com.klaytn.caver.utils.Convert;
 import org.junit.Before;
 import org.junit.Test;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -31,19 +31,19 @@ public class FeePayerManagerTest {
     );
     static final KlayCredentials FEE_PAYER = KlayCredentials.create("0xdbf27cba60b0ea2b6b7869f45556542865fd804abe28eb8fb231e79735def7d8");
 
-    Caverj caverj;
+    Caver caver;
 
     @Before
     public void setUp() {
-        caverj = Caverj.build(Caverj.BAOBAB_URL);
+        caver = Caver.build(Caver.BAOBAB_URL);
     }
 
     @Test
     public void testFeePayerManagerValueTransfer() throws Exception {
         String rawTx = getSenderRawTx();
         FeePayerManager feePayerManager =
-                new FeePayerManager.Builder(caverj, FEE_PAYER)
-                        .setTransactionReceiptProcessor(new PollingTransactionReceiptProcessor(caverj, 1000, 10))
+                new FeePayerManager.Builder(caver, FEE_PAYER)
+                        .setTransactionReceiptProcessor(new PollingTransactionReceiptProcessor(caver, 1000, 10))
                         .build();
         KlayTransactionReceipt.TransactionReceipt transactionReceipt = feePayerManager.executeTransaction(rawTx);
         assertEquals("0x1", transactionReceipt.getStatus());
@@ -55,11 +55,11 @@ public class FeePayerManagerTest {
                 .nonce(getNonce(LUMAN.getAddress()))
                 .buildFeeDelegated();
 
-        return tx.sign(LUMAN, ChainId.BAOBAB).getValueAsString();
+        return tx.sign(LUMAN, ChainId.BAOBAB_TESTNET).getValueAsString();
     }
 
     BigInteger getNonce(String address) throws Exception {
-        BigInteger nonce = caverj.klay().getTransactionCount(
+        BigInteger nonce = caver.klay().getTransactionCount(
                 address,
                 DefaultBlockParameterName.PENDING).sendAsync().get().getValue();
 
