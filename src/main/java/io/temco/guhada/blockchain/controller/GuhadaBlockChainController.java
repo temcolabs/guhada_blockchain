@@ -37,4 +37,16 @@ public class GuhadaBlockChainController {
     public List<GuhadaTransactResponse> getTransactData(@PathVariable(value = "productId") long productId){
         return guhadaContractService.getTransactData(productId);
     }
+
+    @GetMapping("/deploy-contract")
+    public void deployContract(){
+        guhadaContractService.smartContractDeployFeeDelegation();
+    }
+
+    @PostMapping("/upload-blockchain-delegation")
+    @ApiOperation(value = "uploadToBlockchainFeeDelegation", notes = "상품의 정보를 저장하고 상품을 스캔할 때 사용할 QRCode를 생성하기위한 값을 제공하는 API")
+    @ResponseBody
+    public GuhadaTransact uploadToBlockchainFeeDelegation(@RequestBody GuhadaTransactRequest guhadaTransactRequest) throws Exception {
+        return guhadaContractService.uploadToBlockchainFeeDelegation(guhadaTransactRequest);
+    }
 }
