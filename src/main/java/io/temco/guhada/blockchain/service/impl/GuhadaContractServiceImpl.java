@@ -196,6 +196,7 @@ public class GuhadaContractServiceImpl implements GuhadaContractService {
                         new Utf8String(guhadaTransact.getHash())),
                 Collections.<TypeReference<?>>emptyList());
         String encodeData = FunctionEncoder.encode(function);
+
         SmartContractExecutionTransaction smartContractExecutionTransaction = SmartContractExecutionTransaction.create(
                 senderPublicKey,
                 delegationContract,

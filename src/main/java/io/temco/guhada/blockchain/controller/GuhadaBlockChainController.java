@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import io.temco.guhada.blockchain.model.GuhadaTransact;
 import io.temco.guhada.blockchain.model.request.GuhadaTransactRequest;
 import io.temco.guhada.blockchain.model.response.GuhadaTransactResponse;
+import io.temco.guhada.blockchain.service.GuhadaContractMainnetService;
 import io.temco.guhada.blockchain.service.GuhadaContractService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class GuhadaBlockChainController {
 
     @Autowired
     private GuhadaContractService guhadaContractService;
+
+    @Autowired
+    private GuhadaContractMainnetService guhadaContractMainnetService;
 
     @PostMapping("/upload-blockchain")
     @ApiOperation(value = "uploadBlockchain", notes = "상품의 정보를 저장하고 상품을 스캔할 때 사용할 QRCode를 생성하기위한 값을 제공하는 API")
@@ -44,9 +48,24 @@ public class GuhadaBlockChainController {
     }
 
     @PostMapping("/upload-blockchain-delegation")
-    @ApiOperation(value = "uploadToBlockchainFeeDelegation", notes = "상품의 정보를 저장하고 상품을 스캔할 때 사용할 QRCode를 생성하기위한 값을 제공하는 API")
+    @ApiOperation(value = "uploadToBlockchainFeeDelegation", notes = "")
     @ResponseBody
     public GuhadaTransact uploadToBlockchainFeeDelegation(@RequestBody GuhadaTransactRequest guhadaTransactRequest) throws Exception {
         return guhadaContractService.uploadToBlockchainFeeDelegation(guhadaTransactRequest);
     }
+
+
+    @GetMapping("/deploy-contract-mainnet")
+    public void deployContractMainNet(){
+        guhadaContractMainnetService.smartContractDeployFeeDelegationMainNet();
+    }
+
+    @PostMapping("/upload-blockchain-delegation-mainnet")
+    @ApiOperation(value = "uploadToBlockchainFeeDelegation", notes = "")
+    @ResponseBody
+    public GuhadaTransact uploadToBlockchainFeeDelegationMainNet(@RequestBody GuhadaTransactRequest guhadaTransactRequest) throws Exception {
+        return guhadaContractMainnetService.uploadToBlockchainFeeDelegationMainNet(guhadaTransactRequest);
+    }
+
+
 }
