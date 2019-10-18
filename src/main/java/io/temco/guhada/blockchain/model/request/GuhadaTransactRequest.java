@@ -15,6 +15,8 @@ public class GuhadaTransactRequest {
 
     private long productId;
 
+    private long dealId;
+
     private String serialId;
 
     private String brandName;

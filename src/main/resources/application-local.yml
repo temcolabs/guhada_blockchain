@@ -1,0 +1,38 @@
+spring:
+#  aws:
+#    s3config:
+#      clientRegion: "ap-northeast-1"
+#      bucketName: "poc.online-luxury-market"
+#      accessKey: ENC(D5Jfwx2R2/8p+KcyhKuhVwk34aMmX/99z1+M+af1Xa4eFGdY8RvZeK38gYcR5slO)
+#      secretKey: ENC(oodGhHNp1Ukw7/4uauYA5ogdVF3DN14JE84MM8TaJW9WuXFzu7e5vaoyl/Fi2WKBrtTt12cqP95PyyObRgosQ9FPR3fHs8b8)
+#      folderName: "blockchain"
+#      fileFormat: "png"
+  datasource:
+    url: jdbc:mysql://guhada-dev-cluster.cluster-ro-cytgq1fzvvht.ap-northeast-2.rds.amazonaws.com:3306/guhada_dev?useUnicode=true&characterEncoding=utf8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: api-order
+    password: ENC(N6M89ZHmfkOM1+FBaNpeVx2e/9YyJxaR)
+    hikari:
+      minimum-idle: 2
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      dialect : io.temco.guhada.user.config.InnoDBDialect
+  application:
+    name: datastorage
+  thymeleaf:
+    cache: false
+
+
+jasypt:
+  encryptor:
+   bean: jasyptStringEncrptor
+
+
+cron:
+  exp:
+    blockchain:
+      upload-deal : 0 * * * * ?

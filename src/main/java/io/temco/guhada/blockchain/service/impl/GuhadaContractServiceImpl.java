@@ -216,8 +216,8 @@ public class GuhadaContractServiceImpl implements GuhadaContractService {
 
         KlayTransactionReceipt.TransactionReceipt transactionReceipt = feePayerManager.executeTransaction(senderRawTransaction);
 
-        log.error(transactionReceipt.getTransactionHash());
-        log.error(transactionReceipt.getErrorMessage());
+        log.debug(transactionReceipt.getTransactionHash());
+        log.debug(transactionReceipt.getErrorMessage());
 
         return guhadaTransact;
     }

@@ -25,6 +25,9 @@ public class GuhadaTransact {
     @Column(name="product_id")
     private long productId;
 
+    @Column(name="deal_id")
+    private long dealId;
+
     @Column(name="serial_id")
     private String serialId;
 
@@ -74,6 +77,7 @@ public class GuhadaTransact {
     public static GuhadaTransact of(GuhadaTransactRequest guhadaTransactRequest){
         GuhadaTransact guhadaTransact = new GuhadaTransact();
         guhadaTransact.productId = guhadaTransactRequest.getProductId();
+        guhadaTransact.dealId = guhadaTransactRequest.getDealId();
         guhadaTransact.serialId = guhadaTransactRequest.getSerialId();
         guhadaTransact.brandName = guhadaTransactRequest.getBrandName();
         guhadaTransact.seller = guhadaTransactRequest.getSeller();

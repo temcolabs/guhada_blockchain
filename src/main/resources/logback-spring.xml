@@ -1,78 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
 <configuration>
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <springProperty name="service" source="logging.service" defalutValue="UNKNOWN" />
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS, Asia/Seoul}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr([%class{5} > %method:%line]){magenta} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS, Asia/Seoul} ${LOG_LEVEL_PATTERN:-%5p} --- %-40.40logger{39} [ %line ] : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+    <if condition='isDefined("logging.path")'>
+        <then>
+            <property name="LOGGING_PATH" value="${logging.path}"/>
+        </then>
+        <else>
+            <if condition='p("spring.profiles.active").equals("local")'>
+                <then>
+                    <property name="LOGGING_PATH" value="${user.home}/logs/${service}"/>
+                </then>
+                <else>
+                    <property name="LOGGING_PATH" value="${user.home}/logs/${service}"/>
+                </else>
+            </if>
+        </else>
+    </if>
+    <if condition='p("spring.profiles.active").equals("local") || p("spring.profiles.active").equals("dev") || p("spring.profiles.active").equals("stg")'>
+        <then>
+            <property name="LOGGER_LEVEL_ROOT" value="DEBUG" />
+            <property name="LOGGER_LEVEL_DEFAULT" value="DEBUG" />
+        </then>
+        <else>
+            <property name="LOGGER_LEVEL_ROOT" value="ERROR" />
+            <property name="LOGGER_LEVEL_DEFAULT" value="INFO" />
+        </else>
+    </if>
 
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-
-    <property name="CONSOLE_PATTERN"
-              value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS, Asia/Seoul}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr([%class{5} > %method:%line]){magenta} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
-    <property name="FILE_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS, Asia/Seoul} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} [%class{5} > %method:%line] : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
-
-    <property name="LOG_PATH" value="${LOG_PATH:-${user.home}/logs}"/>
-    <property name="LOG_FILE" value="${LOG_FILE:-spring}"/>
-
-    <appender name="CONSOLE_APPENDER" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="LOG-CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>${CONSOLE_PATTERN}</pattern>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
             <charset>utf8</charset>
         </encoder>
     </appender>
 
-    <appender name="FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}/${LOG_FILE}.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/old/${LOG_FILE}-%d{yyyyMMdd-HH}.%i.log.gz</fileNamePattern>
-            <maxHistory>10</maxHistory>
-            <maxFileSize>300MB</maxFileSize>
+    <appender name="LOG-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGGING_PATH}/access.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGGING_PATH}/old/access-%d{yyyyMMdd}.log.gz</fileNamePattern>
+            <maxHistory>720</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>${FILE_PATTERN}</pattern>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
             <charset>utf8</charset>
         </encoder>
     </appender>
 
-    <appender name="FILE_ERROR_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}/${LOG_FILE}-error.log</file>
+    <appender name="ERROR-LOG-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGGING_PATH}/error.log</file>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>ERROR</level>
         </filter>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/old/${LOG_FILE}-error-%d{yyyyMMdd-HH}.%i.log.gz</fileNamePattern>
-            <maxHistory>10</maxHistory>
-            <maxFileSize>300MB</maxFileSize>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGGING_PATH}/error-%d{yyyyMMdd}.log.gz</fileNamePattern>
+            <maxHistory>720</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>${FILE_PATTERN}</pattern>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
             <charset>utf8</charset>
         </encoder>
     </appender>
 
-    <!-- 로그 레벨 설정 -->
-    <!--<logger name="java.sql" level="INFO" />-->
-    <logger name="org.apache" level="WARN"/>
-    <!--<logger name="org.mybatis.spring" level="INFO" />-->
-    <logger name="org.springframework" level="INFO"/>
+    <!-- DEBUG > INFO > WARN > ERROR > OFF -->
+    <logger name="springfox.documentation.schema" level="OFF" />
+    <logger name="org.springframework.jndi" level="OFF" />
+    <logger name="springfox.documentation.spring.web.readers" level="OFF" />
+    <logger name="springfox.documentation.swagger.readers.operation" level="OFF" />
+    <logger name="springfox.documentation.spring.web.scanners" level="OFF" />
+    <logger name="org.springframework.web.servlet.mvc.method.annotation" level="OFF" />
 
-    <!-- spring profiles 에 따른 로그 레벨 설정 (spring boot 에서만 설정 가능함.) -->
-    <springProfile name="local">
-        <logger name="com.crypto.rpc" level="DEBUG"/>
+    <logger name="java.sql" level="INFO" />
+    <logger name="org.apache" level="WARN" />
+    <logger name="org.hibernate" level="INFO" />
+    <logger name="org.mybatis.spring" level="INFO" />
+    <logger name="org.springframework" level="INFO" />
+    <logger name="io.temco" level="INFO" />
+    <logger name="com.amazonaws" level="INFO" />
 
-        <!-- 정의 되지 않은 logger 들에게 일괄 적용됨 -->
-        <root level="INFO">
-            <appender-ref ref="CONSOLE_APPENDER"/>
-            <appender-ref ref="FILE_APPENDER"/>
-            <appender-ref ref="FILE_ERROR_APPENDER"/>
-        </root>
-    </springProfile>
-
-    <springProfile name="!local">
-        <logger name="io.temco.datastorage" level="ERROR"/>
-
-        <!-- 정의 되지 않은 logger 들에게 일괄 적용됨 -->
-        <root level="ERROR">
-            <appender-ref ref="FILE_APPENDER"/>
-            <appender-ref ref="FILE_ERROR_APPENDER"/>
-        </root>
-    </springProfile>
-
+    <root>
+        <if condition='p("spring.profiles.active").equals("local")'>
+            <then>
+                <appender-ref ref="LOG-CONSOLE"/>
+            </then>
+            <else>
+                <appender-ref ref="LOG-FILE" />
+                <appender-ref ref="ERROR-LOG-FILE" />
+            </else>
+        </if>
+    </root>
 </configuration>

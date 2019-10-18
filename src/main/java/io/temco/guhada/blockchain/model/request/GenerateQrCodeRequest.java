@@ -2,7 +2,6 @@ package io.temco.guhada.blockchain.model.request;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.temco.guhada.blockchain.model.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
