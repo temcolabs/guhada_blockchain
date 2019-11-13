@@ -29,7 +29,7 @@ public interface BlockChainMapper {
             "INNER JOIN user ON user.id = deal.seller_id\n" +
             "LEFT JOIN guhada_transact ON deal.id = guhada_transact.deal_id\n" +
             "WHERE guhada_transact.guhada_transact_id is null\n" +
-            "LIMIT 10;\n")
+            "LIMIT 25;\n")
     List<UnregisteredDeal> getUnregisteredDeal();
 
 }

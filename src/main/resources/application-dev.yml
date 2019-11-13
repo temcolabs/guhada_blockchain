@@ -26,6 +26,8 @@ spring:
   thymeleaf:
     cache: false
 
+logging:
+  service: blockchain
 
 jasypt:
   encryptor:
@@ -35,4 +37,4 @@ jasypt:
 cron:
   exp:
     blockchain:
-      upload-deal : 0 5 * * * ?
+      upload-deal : 0 * * * * ?

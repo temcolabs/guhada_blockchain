@@ -26,6 +26,8 @@ spring:
   thymeleaf:
     cache: false
 
+logging:
+  service: blockchain
 
 jasypt:
   encryptor:

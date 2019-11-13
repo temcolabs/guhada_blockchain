@@ -29,7 +29,7 @@
         </then>
         <else>
             <property name="LOGGER_LEVEL_ROOT" value="ERROR" />
-            <property name="LOGGER_LEVEL_DEFAULT" value="INFO" />
+            <property name="LOGGER_LEVEL_DEFAULT" value="DEBUG" />
         </else>
     </if>
 

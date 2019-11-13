@@ -45,8 +45,8 @@ public class GuhadaTransactSchedule {
         guhadaTransactRequest.setSeller(unregisteredDeal.getSeller());
         guhadaTransactRequest.setProductName(unregisteredDeal.getProductName());
         guhadaTransactRequest.setPrice(unregisteredDeal.getPrice());
-//            guhadaContractMainnetService.uploadToBlockchainFeeDelegationMainNet(guhadaTransactRequest);
-            guhadaContractService.uploadToBlockchainFeeDelegation(guhadaTransactRequest);
+            guhadaContractMainnetService.uploadToBlockchainFeeDelegationMainNet(guhadaTransactRequest);
+//            guhadaContractService.uploadToBlockchainFeeDelegation(guhadaTransactRequest);
         }
     }
 }
