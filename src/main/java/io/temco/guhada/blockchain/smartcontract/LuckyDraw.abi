@@ -1,0 +1,116 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "dealId",
+				"type": "uint256"
+			}
+		],
+		"name": "draw",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "eventId",
+				"type": "string"
+			},
+			{
+				"name": "dealId",
+				"type": "uint256"
+			},
+			{
+				"name": "userId",
+				"type": "uint256"
+			},
+			{
+				"name": "userEmail",
+				"type": "string"
+			}
+		],
+		"name": "entry",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"name": "entryUsers",
+		"outputs": [
+			{
+				"name": "dealId",
+				"type": "uint256"
+			},
+			{
+				"name": "userId",
+				"type": "uint256"
+			},
+			{
+				"name": "userEmail",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "luckyDrawEntrys",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "luckyDrawWinner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
