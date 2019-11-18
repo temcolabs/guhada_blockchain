@@ -1,11 +1,13 @@
 package io.temco.guhada.blockchain.controller;
 
-import io.temco.guhada.blockchain.model.request.GuhadaTransactRequest;
 import io.temco.guhada.blockchain.model.LuckyDrawModel;
+import io.temco.guhada.blockchain.model.request.LuckyDrawRequest;
 import io.temco.guhada.blockchain.service.LuckyDrawService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created by Shin Han
@@ -21,8 +23,8 @@ public class LuckyDrawController {
 
     @PostMapping("/entry")
     @ResponseBody
-    public void entry(@RequestBody LuckyDrawModel luckyDrawRequest) throws Exception {
-        luckyDrawService.entry(luckyDrawRequest);
+    public void entry(List<LuckyDrawRequest> luckyDrawRequestList) throws Exception {
+        luckyDrawService.entry(luckyDrawRequestList);
     }
 
     @PostMapping("/draw")
@@ -31,10 +33,10 @@ public class LuckyDrawController {
         luckyDrawService.draw(dealId);
     }
 
-    @GetMapping("/lucky-draw-entrys/{dealId}")
+    @GetMapping("/lucky-draw-entrys/")
     @ResponseBody
-    public LuckyDrawModel luckyDrawEntrys(@PathVariable(value="dealId") Long dealId){
-        return luckyDrawService.getLuckyDrawEntrys(dealId);
+    public LuckyDrawModel luckyDrawEntrys(@RequestParam(value="dealId") Long dealId, @RequestParam(value="userId") Long userId) throws Exception {
+        return luckyDrawService.getEntryUser(dealId,userId);
     }
 
     @PostMapping("/lucky-draw-winner/{dealId}")

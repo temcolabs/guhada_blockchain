@@ -14,6 +14,8 @@ spring:
     password: ENC(N6M89ZHmfkOM1+FBaNpeVx2e/9YyJxaR)
     hikari:
       minimum-idle: 2
+      maximum-pool-size: 10
+      idle-timeout: 10000
   jpa:
     generate-ddl: false
     show-sql: true
