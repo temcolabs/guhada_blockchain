@@ -6,6 +6,8 @@ import io.temco.guhada.blockchain.model.response.UnregisteredDeal;
 import io.temco.guhada.blockchain.service.GuhadaContractMainnetService;
 import io.temco.guhada.blockchain.service.GuhadaContractService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +20,8 @@ import java.util.List;
 @Slf4j
 @Component
 public class GuhadaTransactSchedule {
+    @Value("${spring.profiles.active:dev}")
+    private String profilesName;
 
     private final GuhadaContractMainnetService guhadaContractMainnetService;
     private final BlockChainMapper blockChainMapper;
@@ -34,6 +38,9 @@ public class GuhadaTransactSchedule {
 
     @Scheduled(cron = "${cron.exp.blockchain.upload-deal}")
     public void blockChainUploadExecuter() throws Exception {
+        if("local".equals(profilesName) || StringUtils.isEmpty(profilesName)) {
+            return;
+        }
         List<UnregisteredDeal> unregisteredDealList = blockChainMapper.getUnregisteredDeal();
         for (UnregisteredDeal unregisteredDeal:unregisteredDealList) {
 
@@ -46,7 +53,6 @@ public class GuhadaTransactSchedule {
         guhadaTransactRequest.setProductName(unregisteredDeal.getProductName());
         guhadaTransactRequest.setPrice(unregisteredDeal.getPrice());
             guhadaContractMainnetService.uploadToBlockchainFeeDelegationMainNet(guhadaTransactRequest);
-//            guhadaContractService.uploadToBlockchainFeeDelegation(guhadaTransactRequest);
         }
     }
 }

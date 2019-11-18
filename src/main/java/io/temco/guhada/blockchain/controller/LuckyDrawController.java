@@ -23,14 +23,14 @@ public class LuckyDrawController {
 
     @PostMapping("/entry")
     @ResponseBody
-    public void entry(@RequestBody List<LuckyDrawRequest> luckyDrawRequestList) throws Exception {
-        luckyDrawService.entry(luckyDrawRequestList);
+    public String entry(@RequestBody LuckyDrawRequest luckyDrawRequest) throws Exception {
+        return luckyDrawService.entry(luckyDrawRequest);
     }
 
     @PostMapping("/draw")
     @ResponseBody
-    public void draw(@RequestParam long dealId) throws Exception {
-        luckyDrawService.draw(dealId);
+    public Long draw(@RequestParam long dealId) throws Exception {
+        return luckyDrawService.draw(dealId);
     }
 
     @GetMapping("/lucky-draw-entrys/")
@@ -39,9 +39,9 @@ public class LuckyDrawController {
         return luckyDrawService.getEntryUser(dealId,userId);
     }
 
-    @PostMapping("/lucky-draw-winner/{dealId}")
+    @GetMapping("/lucky-draw-winner/{dealId}")
     @ResponseBody
-    public LuckyDrawModel luckyDrawWinner(@PathVariable(value="dealId") Long dealId) throws Exception {
+    public Long luckyDrawWinner(@PathVariable(value="dealId") Long dealId) throws Exception {
         return luckyDrawService.getLuckyDrawWinner(dealId);
     }
 }

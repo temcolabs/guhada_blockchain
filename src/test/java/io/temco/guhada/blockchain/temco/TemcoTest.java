@@ -17,8 +17,12 @@ public class TemcoTest {
 
         String email = "shin.han@temco.io";
         String userEmail = email.split("@")[0];
+        String star = "";
+        for(int i= 0; i < userEmail.length() - 2 ; i++) {
+            star += "*";
+        }
         String userEmailDomain = email.split("@")[1];
-        String emailString = "**" + userEmail.substring(2) + "@***" + userEmailDomain.substring(3);
+        String emailString =userEmail.substring(0,2) + star+ "@" +userEmailDomain;
 
         System.out.println(emailString);
 
