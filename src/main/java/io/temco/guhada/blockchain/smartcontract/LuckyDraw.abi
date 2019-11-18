@@ -7,6 +7,20 @@
 				"type": "uint256"
 			}
 		],
+		"name": "destoryDrawItem",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "dealId",
+				"type": "uint256"
+			}
+		],
 		"name": "draw",
 		"outputs": [
 			{

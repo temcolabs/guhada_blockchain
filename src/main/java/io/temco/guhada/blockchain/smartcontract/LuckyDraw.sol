@@ -30,5 +30,9 @@ return uint8(uint256(keccak256(abi.encodePacked(block.timestamp, block.difficult
 
 }
 
+function destoryDrawItem(uint dealId) public{
+delete luckyDrawEntrys[dealId];
+}
+
 }
 

@@ -23,7 +23,7 @@ public class LuckyDrawController {
 
     @PostMapping("/entry")
     @ResponseBody
-    public void entry(List<LuckyDrawRequest> luckyDrawRequestList) throws Exception {
+    public void entry(@RequestBody List<LuckyDrawRequest> luckyDrawRequestList) throws Exception {
         luckyDrawService.entry(luckyDrawRequestList);
     }
 
