@@ -12,4 +12,5 @@ public interface LuckyDrawService {
     Long draw(long dealId) throws Exception;
     LuckyDrawModel getEntryUser(long dealId,long userId) throws Exception;
     Long getLuckyDrawWinner(long dealId) throws Exception;
+    void delete(long dealId);
 }

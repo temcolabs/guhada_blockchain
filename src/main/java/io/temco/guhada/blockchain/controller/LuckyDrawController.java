@@ -44,4 +44,10 @@ public class LuckyDrawController {
     public Long luckyDrawWinner(@PathVariable(value="dealId") Long dealId) throws Exception {
         return luckyDrawService.getLuckyDrawWinner(dealId);
     }
+
+    @DeleteMapping("/lucky-draw-delete/{dealId}")
+    @ResponseBody
+    public void luckyDrawDelete(@PathVariable(value="dealId") Long dealId) {
+        luckyDrawService.delete(dealId);
+    }
 }

@@ -1,6 +1,7 @@
 package io.temco.guhada.blockchain.mapper;
 
 import io.temco.guhada.blockchain.model.LuckyDrawModel;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -26,6 +27,11 @@ public interface LuckyDrawMapper {
             "FROM user\n" +
             "where user.id = #{userId};")
     LuckyDrawModel getUser(@Param("dealId") long dealId,
-                                 @Param("userId") long userId);
+                           @Param("userId") long userId);
+
+
+    @Insert("INSERT INTO lucky_draw_winner(deal_id, user_id) VALUES (#{dealId}, #{userId})")
+    void insertLuckyDrawWinner(@Param("dealId") long dealId,
+                               @Param("userId") long userId);
 
 }
