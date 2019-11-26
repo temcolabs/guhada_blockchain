@@ -14,6 +14,7 @@ import io.temco.guhada.blockchain.service.LuckyDrawService;
 import io.temco.guhada.blockchain.smartcontract.LuckyDraw;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.web3j.abi.FunctionEncoder;
@@ -41,13 +42,22 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
     @Autowired
     private LuckyDrawMapper luckyDrawMapper;
 
-
-
+    @Value("${smart-contract.payer-private-key}")
+    private String payerPrivateKey;
+    @Value("${smart-contract.payer-public-key}")
+    private String payerPublicKey;
+    @Value("${smart-contract.sender-private-key}")
+    private String senderPrivateKey;
+    @Value("${smart-contract.sender-public-key}")
+    private String senderPublicKey;
+    @Value("${smart-contract.lucky-draw-contract}")
+    private String luckyDrawContract;
+    private final BigInteger gasLimit = BigInteger.valueOf(43000000l);
     private Caver caver;
     private LuckyDraw luckyDraw;
     private KlayCredentials feePayer;
-    KlayCredentials sender;
-    KlayCredentials credentials = KlayCredentials.create(senderPrivateKey);
+    private KlayCredentials sender;
+    private KlayCredentials credentials;
 
     @PostConstruct
     private void initCaverJava(){
@@ -55,8 +65,8 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
         caver = Caver.build(Caver.MAINNET_URL);
         feePayer = KlayCredentials.create(payerPrivateKey, payerPublicKey);
         sender = KlayCredentials.create(senderPrivateKey);
-
-        luckyDraw = luckyDraw.load(delegationContract, caver, credentials, ChainId.BAOBAB_TESTNET, new DefaultGasProvider());
+        credentials = KlayCredentials.create(senderPrivateKey);
+        luckyDraw = luckyDraw.load(luckyDrawContract, caver, credentials, ChainId.BAOBAB_TESTNET, new DefaultGasProvider());
 
     }
 
@@ -103,10 +113,10 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
         String encodeData = FunctionEncoder.encode(function);
         SmartContractExecutionTransaction smartContractExecutionTransaction = SmartContractExecutionTransaction.create(
                 senderPublicKey,
-                delegationContract,
+                luckyDrawContract,
                 BigInteger.ZERO,
                 Numeric.hexStringToByteArray(encodeData),
-                new DefaultGasProvider().getGasLimit(LuckyDraw.FUNC_ENTRY));
+                gasLimit);
 
         TransactionManager transactionManager = new TransactionManager.Builder(caver,sender).setChaindId(ChainId.MAINNET).build();
 
@@ -115,7 +125,7 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
         FeePayerManager feePayerManager = new FeePayerManager.Builder(caver,feePayer).setChainId(ChainId.MAINNET).build();
 
         KlayTransactionReceipt.TransactionReceipt transactionReceipt = feePayerManager.executeTransaction(senderRawTransaction);
-        if(transactionReceipt.getStatus().equals("1")){
+        if(transactionReceipt.getStatus().equals("0x1")){
             return transactionReceipt.getTransactionHash();
         }else{
             return null;
@@ -132,12 +142,13 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
                     Arrays.<Type>asList(new Uint256(dealId)),
                     Collections.<TypeReference<?>>emptyList());
         String encodeData = FunctionEncoder.encode(function);
-        SmartContractExecutionTransaction smartContractExecutionTransaction = SmartContractExecutionTransaction.create(
+            BigInteger gasLimit = new DefaultGasProvider().getGasLimit(LuckyDraw.FUNC_DRAW);
+            SmartContractExecutionTransaction smartContractExecutionTransaction = SmartContractExecutionTransaction.create(
                 senderPublicKey,
-                delegationContract,
+                    luckyDrawContract,
                 BigInteger.ZERO,
                 Numeric.hexStringToByteArray(encodeData),
-                new DefaultGasProvider().getGasLimit(LuckyDraw.FUNC_DRAW));
+                gasLimit);
 
         TransactionManager transactionManager = new TransactionManager.Builder(caver,sender).setChaindId(ChainId.MAINNET).build();
 
@@ -153,7 +164,7 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
             }
         }
         Long luckyDrawWinner = 0l;
-        if(transactionReceipt.getStatus().equals("1")){
+        if(transactionReceipt.getStatus().equals("0x1")){
             luckyDrawWinner = getLuckyDrawWinner(dealId);
             luckyDrawMapper.insertLuckyDrawWinner(dealId,luckyDrawWinner);
             return luckyDrawWinner;
@@ -187,7 +198,7 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
         String encodeData = FunctionEncoder.encode(function);
         SmartContractExecutionTransaction smartContractExecutionTransaction = SmartContractExecutionTransaction.create(
                 senderPublicKey,
-                delegationContract,
+                luckyDrawContract,
                 BigInteger.ZERO,
                 Numeric.hexStringToByteArray(encodeData),
                 new DefaultGasProvider().getGasLimit(LuckyDraw.FUNC_DESTORYDRAWITEM));

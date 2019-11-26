@@ -3,4 +3,8 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = 'blockchain'
+rootProject.name = 'guhada-blockchain'
+
+include ':guhada_framework'
+project(':guhada_framework').projectDir =
+        new File('../guhada_framework')

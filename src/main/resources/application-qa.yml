@@ -8,7 +8,7 @@ spring:
 #      folderName: "blockchain"
 #      fileFormat: "png"
   datasource:
-    url: jdbc:mysql://guhada-dev-cluster.cluster-ro-cytgq1fzvvht.ap-northeast-2.rds.amazonaws.com:3306/guhada_dev?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://guhada-dev-cluster.cluster-ro-cytgq1fzvvht.ap-northeast-2.rds.amazonaws.com:3306/guhada_qa?useUnicode=true&characterEncoding=utf8
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: api-order
     password: ENC(N6M89ZHmfkOM1+FBaNpeVx2e/9YyJxaR)
@@ -51,12 +51,12 @@ smart-contract:
 
 server:
   port: 8080
-  host: 127.0.0.1:8080
+  host: 52.79.162.253:8080
 
 retrofit:
-  benefit-api: 'http://dev.benefit.guhada.com'
+  benefit-api: 'http://qa.benefit.guhada.com'
 
 cron:
   exp:
     blockchain:
-      upload-deal : 0 1 1 1 1 ?
+      upload-deal : 0 * * * * ?
