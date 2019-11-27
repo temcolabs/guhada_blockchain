@@ -1,6 +1,7 @@
 package io.temco.guhada.blockchain.model;
 
 import lombok.*;
+import org.codehaus.plexus.component.annotations.Configuration;
 
 import javax.persistence.*;
 import java.math.BigInteger;
@@ -25,9 +26,15 @@ public class UserTokenHistory {
     @Column(name="user_id")
     private long userId;
 
+    @Column(name="action_type")
+    private String actionType;
+
     @Column(name="created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name="changed_balance")
     private BigInteger changedBalance;
+
+    @Column(name="token_name")
+    private String tokenName;
 }

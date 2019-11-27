@@ -1,6 +1,5 @@
 package io.temco.guhada.blockchain.mapper;
 
-import io.temco.guhada.blockchain.model.LuckyDrawModel;
 import io.temco.guhada.framework.model.blockchain.response.UserTokenItemResponse;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -20,12 +19,15 @@ public interface UserTokenMapper {
 
     @Select("SELECT \n" +
             "   ROUND(UNIX_TIMESTAMP(created_at) * 1000) AS completeTimestamp, \n" +
-            "   changed_balance AS changedBalance \n" +
+            "   changed_balance AS changedBalance, \n" +
+            "   action_type AS tokenActionType \n" +
             "   FROM user_token_history\n" +
-            "   where user_id = #{userId}\n" +
+            "   where user_id = #{userId} and" +
+            "   token_name = #{tokenName} \n" +
             "   ORDER BY created_at desc\n"+
             "   LIMIT #{startIndex} , #{unitPerPage};")
     List<UserTokenItemResponse> getMyTokenInfo(@Param("userId") Long userId,
+                                               @Param("tokenName") String tokenName,
                                                @Param("startIndex") int startIndex,
                                                @Param("unitPerPage")int unitPerPage);
 
