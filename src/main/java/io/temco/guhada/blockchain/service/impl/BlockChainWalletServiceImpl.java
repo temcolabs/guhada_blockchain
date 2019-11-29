@@ -146,7 +146,7 @@ public class BlockChainWalletServiceImpl implements BlockchainWalletService {
                         .userId(userTokenAccount.getUserId())
                         .changedBalance(subtractBalance)
                         .actionType(TokenActionType.SAVE.name())
-                        .tokenName(TokenType.GuhadaAirdrop.name())
+                        .tokenName(TokenType.GUHADA.name())
                         .build();
                 userTokenHistoryRepository.save(userTokenHistory);
                 userTokenAccount.setCurrentBalance(balance);
@@ -155,9 +155,9 @@ public class BlockChainWalletServiceImpl implements BlockchainWalletService {
 
             if(userTokenAccount.getCurrentBalance().compareTo(userTokenAccount.getTransferPointBalance()) != 0){
                 BigInteger transferPointBalance = userTokenAccount.getCurrentBalance().subtract(userTokenAccount.getTransferPointBalance());
-                TokenType guhadaAirdrop = TokenType.GuhadaAirdrop;
+                TokenType guhadaAirdrop = TokenType.GUHADA;
                 PointRequest pointRequest = PointRequest.builder().pointType(PointType.TOKEN_POINT).serviceType(ServiceType.SYSTEM).chargePrice(transferPointBalance.longValue()).build();
-                benefitApiService.savePoint(pointRequest).execute();
+                benefitApiService.savePoint(pointRequest, userTokenAccount.getUserId()).execute();
                 UserTokenHistory userTokenHistory = UserTokenHistory.builder()
                         .userId(userTokenAccount.getUserId())
                         .changedBalance(BigInteger.valueOf(pointRequest.getChargePrice()))
@@ -189,7 +189,7 @@ public class BlockChainWalletServiceImpl implements BlockchainWalletService {
         int startIndex = page - 1; // cause : mysql zero base
         int myTokenInfoListCount = userTokenMapper.getMyTokenInfoCount(userId);
         int totalPage = (myTokenInfoListCount % unitPerPage) == 0 ? (myTokenInfoListCount / unitPerPage) : (myTokenInfoListCount / unitPerPage) + 1;
-        List<UserTokenItemResponse> myTokenInfoList = userTokenMapper.getMyTokenInfo(userId,tokenName, startIndex, unitPerPage);
+        List<UserTokenItemResponse> myTokenInfoList = userTokenMapper.getMyTokenInfo(userId,tokenName, startIndex * unitPerPage, unitPerPage);
 
         return UserTokenResponse.of(tokenName,tokenType.getImageUrl(), currentTokenBalance,page,myTokenInfoListCount, totalPage, myTokenInfoList);
     }
@@ -200,15 +200,15 @@ public class BlockChainWalletServiceImpl implements BlockchainWalletService {
         // TODO : 임시
         Optional<UserTokenAccount> optionalUserTokenAccount = userTokenAccountRepository.findById(userId);
         if(!optionalUserTokenAccount.isPresent()){
-            getEthAddress(userId,TokenType.GuhadaAirdrop.name());
+            getEthAddress(userId,TokenType.GUHADA.name());
         }
         BigInteger currentTokenBalance = userTokenAccountRepository.getOne(userId).getCurrentBalance();
         List<TokenTypeResponse> tokenTypeList = new ArrayList<>();
 
         TokenTypeResponse tokenTypeResponse = TokenTypeResponse.builder()
-                .tokenName(TokenType.GuhadaAirdrop.name())
-                .tokenNameText(TokenType.GuhadaAirdrop.getTokenText())
-                .tokenImageUrl(TokenType.GuhadaAirdrop.getImageUrl())
+                .tokenName(TokenType.GUHADA.name())
+                .tokenNameText(TokenType.GUHADA.getTokenText())
+                .tokenImageUrl(TokenType.GUHADA.getImageUrl())
                 .balance(currentTokenBalance)
                 .build();
         tokenTypeList.add(tokenTypeResponse);

@@ -1,7 +1,8 @@
 package io.temco.guhada.blockchain.model;
 
-import lombok.*;
-import org.codehaus.plexus.component.annotations.Configuration;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigInteger;

@@ -18,7 +18,7 @@ import java.util.List;
  * Since 2019-03-22
  */
 public interface BenefitApiService {
-    @POST("/process/save/")
-    Call<GuhadaJsonResponse<SavedPointResponse>> savePoint(@Body PointRequest pointRequest);
+    @POST("/process/save/{userId}")
+    Call<GuhadaJsonResponse<SavedPointResponse>> savePoint(@Body PointRequest pointRequest, @Path("userId") long userId);
 
 }

@@ -53,12 +53,12 @@ public class BlockChainWalletController extends BaseController {
         return responseApi(web3jService.getEthAddress(userId,tokenName));
     }
 
-    @Deprecated
-    @GetMapping("/updatetoken") // TEST 용도
-    public ResponseEntity<GuhadaApiResponse> updateToken() throws Exception {
-        web3jService.updateToken();
-        return responseApi(null);
-    }
+//    @Deprecated
+//    @GetMapping("/updatetoken") // TEST 용도
+//    public ResponseEntity<GuhadaApiResponse> updateToken() throws Exception {
+//        web3jService.updateToken();
+//        return responseApi(null);
+//    }
 
     @GetMapping("/my-token-history")
     @ApiOperation(value = "my-token-history", notes = "해당하는 토큰의 입금 및 출금 상세정보", response = UserTokenResponse.class)

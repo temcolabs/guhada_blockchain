@@ -42,12 +42,12 @@ cloud:
 smart-contract:
   chain-url: "https://ropsten.infura.io/v3/67b3ebcb7a574122967fb41c7a968b90"
   guhada-token-contract : '0xA8F52BE91F0229CB21e16111C7a8ea2b48b243f9'
-  payer-private-key : ENC(bqj2JO39Jmep+4NTbPRlUM+7x2E9UjJcgoP5aTSwUscUzzlwjHl5K7mq5pIG5qmXBa6Xr7xnN3Imf2er2A8oGekBXUUOhOKvQM0vzBjxbw4=)
-  payer-public-key : 0x08260736c18bd8612bee2b21beedf4e97c0bc6b9
-  sender-private-key : ENC(hIARKjhXzxrzXpTi149W7U+TbLqpb3DX/RTLMf6dd/FOHoCYBC/P9KMdS+gdvLxpuD19cG2icQCMAOJ4GycltX3Zyg/ZVmrjI7vm44WCj4E=)
-  sender-public-key : 0xc45bddbd8f5c74ef239cb345dab43a9b9bf6cd19
-  delegation-contract : 0x2e160a2b643c630e540243725764112f1bfdb1b3
-  lucky-draw-contract : 0x11d88F9940cBC0c4238b61ADF401b242Fd5514eE
+  payer-private-key : ENC('bqj2JO39Jmep+4NTbPRlUM+7x2E9UjJcgoP5aTSwUscUzzlwjHl5K7mq5pIG5qmXBa6Xr7xnN3Imf2er2A8oGekBXUUOhOKvQM0vzBjxbw4=')
+  payer-public-key : '0x08260736c18bd8612bee2b21beedf4e97c0bc6b9'
+  sender-private-key : ENC('hIARKjhXzxrzXpTi149W7U+TbLqpb3DX/RTLMf6dd/FOHoCYBC/P9KMdS+gdvLxpuD19cG2icQCMAOJ4GycltX3Zyg/ZVmrjI7vm44WCj4E=')
+  sender-public-key : '0xc45bddbd8f5c74ef239cb345dab43a9b9bf6cd19'
+  delegation-contract : '0x2e160a2b643c630e540243725764112f1bfdb1b3'
+  lucky-draw-contract : '0x11d88F9940cBC0c4238b61ADF401b242Fd5514eE'
 
 server:
   port: 8080
@@ -60,3 +60,4 @@ cron:
   exp:
     blockchain:
       upload-deal : 0 1 1 1 1 ?
+      guhada-airdrop-update : 0 0 12 * * ?

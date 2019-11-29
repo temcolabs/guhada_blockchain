@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @ComponentScan(basePackages = {"io.temco.guhada.*"})
 @EntityScan("io.temco.guhada.*")
-//@EnableScheduling
+@EnableScheduling
 public class BlockchainApplication {
 
     private static final String NAME = BlockchainApplication.class.getSimpleName();
