@@ -6,7 +6,6 @@ import io.temco.guhada.framework.controller.BaseController;
 import io.temco.guhada.framework.model.blockchain.response.TokenAddressResponse;
 import io.temco.guhada.framework.model.blockchain.response.TokenTypeResponse;
 import io.temco.guhada.framework.model.blockchain.response.UserTokenResponse;
-import io.temco.guhada.framework.model.order.request.LotteSetRequest;
 import io.temco.guhada.framework.model.response.GuhadaApiResponse;
 import io.temco.guhada.framework.model.user.GuhadaUserDetails;
 import io.temco.guhada.framework.util.UserDetailsHolder;
@@ -57,6 +56,13 @@ public class BlockChainWalletController extends BaseController {
 //    @GetMapping("/updatetoken") // TEST 용도
 //    public ResponseEntity<GuhadaApiResponse> updateToken() throws Exception {
 //        web3jService.updateToken();
+//        return responseApi(null);
+//    }
+//
+//    @Deprecated
+//    @GetMapping("/tokentransfer") // TEST 용도
+//    public ResponseEntity<GuhadaApiResponse> tokenTransfer() throws Exception {
+//        web3jService.tokenTransfer();
 //        return responseApi(null);
 //    }
 

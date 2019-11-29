@@ -51,7 +51,7 @@ smart-contract:
 
 server:
   port: 8080
-  host: 52.79.162.253:8080
+  host: qa.blockchain.guhada.com
 
 retrofit:
   benefit-api: 'http://qa.benefit.guhada.com'

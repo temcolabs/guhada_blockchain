@@ -22,4 +22,6 @@ public interface BlockchainWalletService {
     UserTokenResponse getMyTokenInfo(Long userId,String tokenName ,int page, int unitPerPage) throws NoSuchAlgorithmException, CipherException, InvalidAlgorithmParameterException, NoSuchProviderException;
 
     List<TokenTypeResponse> getTokenList(Long userId) throws NoSuchAlgorithmException, CipherException, InvalidAlgorithmParameterException, NoSuchProviderException;
+
+    void tokenTransfer() throws Exception;
 }

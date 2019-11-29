@@ -1,6 +1,7 @@
 package io.temco.guhada.blockchain.service.impl;
 
 import io.temco.guhada.blockchain.mapper.UserTokenMapper;
+import io.temco.guhada.blockchain.model.AirdropUser;
 import io.temco.guhada.blockchain.model.UserTokenAccount;
 import io.temco.guhada.blockchain.model.UserTokenHistory;
 import io.temco.guhada.blockchain.model.request.PointRequest;
@@ -25,6 +26,7 @@ import org.springframework.util.ObjectUtils;
 import org.web3j.contracts.eip20.generated.ERC20;
 import org.web3j.crypto.*;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.ReadonlyTransactionManager;
 import org.web3j.tx.TransactionManager;
@@ -52,6 +54,8 @@ public class BlockChainWalletServiceImpl implements BlockchainWalletService {
     private String chainUrl;
 
     private Web3j web3j;
+
+    private final BigInteger ether = new BigInteger("1000000000000000000");
 
     @Autowired
     private UserTokenAccountRepository userTokenAccountRepository;
@@ -139,7 +143,7 @@ public class BlockChainWalletServiceImpl implements BlockchainWalletService {
             TransactionManager transactionManager = new ReadonlyTransactionManager(web3j, userTokenAccount.getPublicKey());
             ERC20 guhadaToken = ERC20.load(guhadaTokenContract, web3j, transactionManager, new DefaultGasProvider());
 
-            BigInteger balance = guhadaToken.balanceOf(userTokenAccount.getPublicKey()).send();
+            BigInteger balance = guhadaToken.balanceOf(userTokenAccount.getPublicKey()).send().divide(ether);
             if (userTokenAccount.getCurrentBalance().compareTo(balance) != 0) { // 기존이랑 차이가 있는 경우
                 BigInteger subtractBalance = balance.subtract(userTokenAccount.getCurrentBalance());
                 UserTokenHistory userTokenHistory = UserTokenHistory.builder()
@@ -185,7 +189,8 @@ public class BlockChainWalletServiceImpl implements BlockchainWalletService {
         if(!optionalUserTokenAccount.isPresent()){
             getEthAddress(userId,tokenName);
         }
-        BigInteger currentTokenBalance = userTokenAccountRepository.getOne(userId).getCurrentBalance();
+        UserTokenAccount userTokenAccount = userTokenAccountRepository.getOne(userId);
+        BigInteger currentTokenBalance = userTokenAccount.getCurrentBalance().subtract(userTokenAccount.getTransferPointBalance());
         int startIndex = page - 1; // cause : mysql zero base
         int myTokenInfoListCount = userTokenMapper.getMyTokenInfoCount(userId);
         int totalPage = (myTokenInfoListCount % unitPerPage) == 0 ? (myTokenInfoListCount / unitPerPage) : (myTokenInfoListCount / unitPerPage) + 1;
@@ -197,12 +202,12 @@ public class BlockChainWalletServiceImpl implements BlockchainWalletService {
     @Override
     public List<TokenTypeResponse> getTokenList(Long userId) throws NoSuchAlgorithmException, CipherException, InvalidAlgorithmParameterException, NoSuchProviderException {
 
-        // TODO : 임시
         Optional<UserTokenAccount> optionalUserTokenAccount = userTokenAccountRepository.findById(userId);
         if(!optionalUserTokenAccount.isPresent()){
             getEthAddress(userId,TokenType.GUHADA.name());
         }
-        BigInteger currentTokenBalance = userTokenAccountRepository.getOne(userId).getCurrentBalance();
+        UserTokenAccount userTokenAccount = userTokenAccountRepository.getOne(userId);
+        BigInteger currentTokenBalance = userTokenAccount.getCurrentBalance().subtract(userTokenAccount.getTransferPointBalance());
         List<TokenTypeResponse> tokenTypeList = new ArrayList<>();
 
         TokenTypeResponse tokenTypeResponse = TokenTypeResponse.builder()
@@ -213,6 +218,25 @@ public class BlockChainWalletServiceImpl implements BlockchainWalletService {
                 .build();
         tokenTypeList.add(tokenTypeResponse);
         return tokenTypeList;
+    }
+
+    @Override
+    public void tokenTransfer() throws Exception {
+        Credentials credentials = Credentials.create("");
+
+        List<AirdropUser> airdropUsers = userTokenMapper.getAirdropUsers();
+        for (AirdropUser airdropUser: airdropUsers) {
+            ERC20 guhadaToken = ERC20.load(guhadaTokenContract, web3j, credentials, new DefaultGasProvider());
+
+
+            TransactionReceipt send = guhadaToken.transfer(airdropUser.getAddress(), new BigInteger(airdropUser.getGuhadaAmount())).send();
+
+
+            if(send.getStatus().equals("0x1")) {
+
+                userTokenMapper.updateSuccess(airdropUser.getId());
+            }
+        }
 
     }
 
