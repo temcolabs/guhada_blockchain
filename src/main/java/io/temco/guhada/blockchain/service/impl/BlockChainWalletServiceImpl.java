@@ -72,6 +72,9 @@ public class BlockChainWalletServiceImpl implements BlockchainWalletService {
     @Value("${smart-contract.guhada-token-contract}")
     private String guhadaTokenContract;
 
+    @Value("${smart-contract.guhada-account}")
+    private String guhadaAccount;
+
     @PostConstruct
     private void initWeb3j(){
         web3j = Web3j.build(new HttpService(chainUrl));
@@ -222,14 +225,16 @@ public class BlockChainWalletServiceImpl implements BlockchainWalletService {
 
     @Override
     public void tokenTransfer() throws Exception {
-        Credentials credentials = Credentials.create("");
+        Credentials credentials = Credentials.create(guhadaAccount);
 
         List<AirdropUser> airdropUsers = userTokenMapper.getAirdropUsers();
         for (AirdropUser airdropUser: airdropUsers) {
+            TokenAddressResponse ethAddress = getEthAddress(airdropUser.getUserId(), TokenType.GUHADA.name());
+
             ERC20 guhadaToken = ERC20.load(guhadaTokenContract, web3j, credentials, new DefaultGasProvider());
 
 
-            TransactionReceipt send = guhadaToken.transfer(airdropUser.getAddress(), new BigInteger(airdropUser.getGuhadaAmount())).send();
+            TransactionReceipt send = guhadaToken.transfer(ethAddress.getPublicKey(), new BigInteger(airdropUser.getAmount())).send();
 
 
             if(send.getStatus().equals("0x1")) {

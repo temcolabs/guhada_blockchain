@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.temco.guhada.blockchain.service.retrofit.BenefitApiService;
+import io.temco.guhada.blockchain.service.retrofit.ProductApiService;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,10 @@ public class JsonPlaceholderConfig {
 
     @Value("${retrofit.benefit-api}")
     private String benefitApi;
+
+
+    @Value("${retrofit.product-api}")
+    private String productApi;
 
 
     @Autowired
@@ -50,7 +55,7 @@ public class JsonPlaceholderConfig {
 
 
     @Bean("BenefitApiRetrofit")
-    public Retrofit userApiRetrofit(
+    public Retrofit benefitApiRetrofit(
             @Qualifier("jsonPlaceholderObjectMapper") ObjectMapper jsonPlaceholderObjectMapper,
             @Qualifier("jsonPlaceholderOkHttpClient") OkHttpClient jsonPlaceholderOkHttpClient) {
         return new Retrofit.Builder()
@@ -60,9 +65,25 @@ public class JsonPlaceholderConfig {
                 .build();
     }
 
+    @Bean("ProductApiRetrofit")
+    public Retrofit productApiRetrofit(
+            @Qualifier("jsonPlaceholderObjectMapper") ObjectMapper jsonPlaceholderObjectMapper,
+            @Qualifier("jsonPlaceholderOkHttpClient") OkHttpClient jsonPlaceholderOkHttpClient) {
+        return new Retrofit.Builder()
+                .baseUrl(productApi)
+                .addConverterFactory(JacksonConverterFactory.create(jsonPlaceholderObjectMapper))
+                .client(jsonPlaceholderOkHttpClient)
+                .build();
+    }
+
     @Bean("BenefitApiService")
-    public BenefitApiService userApiService(@Qualifier("BenefitApiRetrofit") Retrofit jsonPlaceHolderRetrofit) {
+    public BenefitApiService benefitApiService(@Qualifier("BenefitApiRetrofit") Retrofit jsonPlaceHolderRetrofit) {
         return jsonPlaceHolderRetrofit.create(BenefitApiService.class);
+    }
+
+    @Bean("ProductApiService")
+    public ProductApiService productApiService(@Qualifier("ProductApiRetrofit") Retrofit jsonPlaceHolderRetrofit) {
+        return jsonPlaceHolderRetrofit.create(ProductApiService.class);
     }
 
 }

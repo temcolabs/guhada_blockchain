@@ -48,6 +48,7 @@ smart-contract:
   sender-public-key : '0xc45bddbd8f5c74ef239cb345dab43a9b9bf6cd19'
   delegation-contract : '0x2e160a2b643c630e540243725764112f1bfdb1b3'
   lucky-draw-contract : '0x11d88F9940cBC0c4238b61ADF401b242Fd5514eE'
+  guhada-account: ENC('jDMMBySGK55pChp0mEm3yLYRgofadq4pQLBmaWuCgBEIk4tleRqzJdZeCg0b7OZQT39z+FZBst9dhLxuaUSkDFrVkh+pav8Zksd1Eun11Vc=')
 
 server:
   port: 8080
@@ -55,6 +56,7 @@ server:
 
 retrofit:
   benefit-api: 'http://dev.benefit.guhada.com'
+  product-api: 'http://dev.product.guhada.com'
 
 cron:
   exp:

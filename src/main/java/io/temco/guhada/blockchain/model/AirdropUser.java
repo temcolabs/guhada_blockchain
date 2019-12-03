@@ -13,7 +13,8 @@ import lombok.ToString;
 @ToString
 public class AirdropUser {
     private int id;
-    private String address;
-    private String guhadaAmount;
+    private long userId;
+    private String phone;
+    private String amount;
     private boolean success;
 }

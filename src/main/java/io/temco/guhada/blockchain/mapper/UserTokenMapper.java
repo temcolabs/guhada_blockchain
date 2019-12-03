@@ -40,18 +40,20 @@ public interface UserTokenMapper {
     int getMyTokenInfoCount(@Param("userId") long userId);
 
 
-    @Select("SELECT\n" +
-            "id as id,\n" +
-            "address as address,\n" +
-            "guhada_amount as guhadaAmount,\n" +
-            "is_success as success\n" +
-            "FROM airdrop_user \n" +
-            "WHERE is_success = '0' \n")
+    @Select("select\n" +
+            "       coinone.id AS id,\n" +
+            "       user.id AS userId,\n" +
+            "       coinone.phone AS phone,\n" +
+            "       coinone.amount AS amount,\n" +
+            "       coinone.is_success AS success\n" +
+            "from coinone\n" +
+            "inner join user on user.mobile = coinone.phone\n" +
+            "where coinone.is_success = 0;\n")
     List<AirdropUser> getAirdropUsers();
 
 
     @Update("UPDATE \n" +
-            "airdrop_user \n" +
+            "coinone \n" +
             "SET is_success = '1' \n" +
             "WHERE id = #{id}")
     void updateSuccess(@Param("id") int id);
