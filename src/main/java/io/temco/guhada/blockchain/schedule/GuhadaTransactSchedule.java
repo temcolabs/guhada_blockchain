@@ -42,25 +42,25 @@ public class GuhadaTransactSchedule {
 
 
 
-    @Scheduled(cron = "${cron.exp.blockchain.upload-deal}")
-    public void blockChainUploadExecuter() throws Exception {
-        if("local".equals(profilesName) || StringUtils.isEmpty(profilesName)) {
-            return;
-        }
-        List<UnregisteredDeal> unregisteredDealList = blockChainMapper.getUnregisteredDeal();
-        for (UnregisteredDeal unregisteredDeal:unregisteredDealList) {
-
-            GuhadaTransactRequest guhadaTransactRequest = new GuhadaTransactRequest();
-            guhadaTransactRequest.setProductId(unregisteredDeal.getProductId());
-            guhadaTransactRequest.setDealId(unregisteredDeal.getDealId());
-            guhadaTransactRequest.setSerialId(unregisteredDeal.getDealId() + "");
-            guhadaTransactRequest.setBrandName(unregisteredDeal.getBrandName());
-            guhadaTransactRequest.setSeller(unregisteredDeal.getSeller());
-            guhadaTransactRequest.setProductName(unregisteredDeal.getProductName());
-            guhadaTransactRequest.setPrice(unregisteredDeal.getPrice());
-            guhadaContractMainnetService.uploadToBlockchainFeeDelegationMainNet(guhadaTransactRequest);
-        }
-    }
+//    @Scheduled(cron = "${cron.exp.blockchain.upload-deal}")
+//    public void blockChainUploadExecuter() throws Exception {
+//        if("local".equals(profilesName) || StringUtils.isEmpty(profilesName)) {
+//            return;
+//        }
+//        List<UnregisteredDeal> unregisteredDealList = blockChainMapper.getUnregisteredDeal();
+//        for (UnregisteredDeal unregisteredDeal:unregisteredDealList) {
+//
+//            GuhadaTransactRequest guhadaTransactRequest = new GuhadaTransactRequest();
+//            guhadaTransactRequest.setProductId(unregisteredDeal.getProductId());
+//            guhadaTransactRequest.setDealId(unregisteredDeal.getDealId());
+//            guhadaTransactRequest.setSerialId(unregisteredDeal.getDealId() + "");
+//            guhadaTransactRequest.setBrandName(unregisteredDeal.getBrandName());
+//            guhadaTransactRequest.setSeller(unregisteredDeal.getSeller());
+//            guhadaTransactRequest.setProductName(unregisteredDeal.getProductName());
+//            guhadaTransactRequest.setPrice(unregisteredDeal.getPrice());
+//            guhadaContractMainnetService.uploadToBlockchainFeeDelegationMainNet(guhadaTransactRequest);
+//        }
+//    }
 
     @Scheduled(cron = "${cron.exp.blockchain.guhada-airdrop-update}")
     public void guhadaAirdropUpdate() throws Exception {
@@ -68,7 +68,7 @@ public class GuhadaTransactSchedule {
     }
 
     @Profile("prod")
-    @Scheduled(cron = "${cron.exp.blockchain.coineone-guhada-airdrop-update}")
+    @Scheduled(cron = "${cron.exp.blockchain.coinone-guhada-airdrop-update}")
     public void coinoneGuhadaAirdropUpdate() throws Exception {
         blockchainWalletService.updateToken();
     }
