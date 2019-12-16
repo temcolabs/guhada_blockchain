@@ -167,26 +167,18 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
 
             transactionHash = transactionReceipt.getTransactionHash();
 
-            if(!ObjectUtils.isEmpty(transactionHash)){
+            if(!ObjectUtils.isEmpty(transactionHash)
+                && transactionReceipt.getStatus().equals("0x1")){
                 break;
             }
             }catch (Exception ex){
                 log.error("executeTransaction error : {}", ex.getMessage());
             }
         }
-        Long luckyDrawWinner = 0l;
-        if(transactionReceipt.getStatus().equals("0x1")){
-            luckyDrawWinner = getLuckyDrawWinner(dealId);
 
-
-
-
-            productApiService.luckyDraw(new LuckyDrawRequest(dealId,luckyDrawWinner));
-            return luckyDrawWinner;
-        }else{
-            return null;
-        }
-
+        Long luckyDrawWinner = getLuckyDrawWinner(dealId);
+        productApiService.luckyDraw(new LuckyDrawRequest(dealId,luckyDrawWinner));
+        return luckyDrawWinner;
     }
 
     @Override

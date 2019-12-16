@@ -8,6 +8,7 @@ import io.temco.guhada.blockchain.service.retrofit.BenefitApiService;
 import io.temco.guhada.blockchain.service.retrofit.ProductApiService;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,8 +39,12 @@ public class JsonPlaceholderConfig {
     @Bean("jsonPlaceholderOkHttpClient")
     public OkHttpClient jsonPlaceholderOkHttpClient() {
 
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
         return new OkHttpClient.Builder()
                 .addInterceptor(jsonPlaceholderInterceptor)
+                .addInterceptor(interceptor)
                 .build();
     }
 
