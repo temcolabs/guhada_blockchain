@@ -10,7 +10,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 /**
- * Created by Shin HanchargePrice
+ * Created by Shin Han
  * Since 2019-03-22
  */
 public interface ProductApiService {
