@@ -177,7 +177,7 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
         }
 
         Long luckyDrawWinner = getLuckyDrawWinner(dealId);
-        productApiService.luckyDraw(new LuckyDrawRequest(dealId,luckyDrawWinner));
+        productApiService.luckyDraw(new LuckyDrawRequest(dealId,luckyDrawWinner)).execute();
         return luckyDrawWinner;
     }
 
