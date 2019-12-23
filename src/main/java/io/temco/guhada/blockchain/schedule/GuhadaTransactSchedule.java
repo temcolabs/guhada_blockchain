@@ -70,7 +70,7 @@ public class GuhadaTransactSchedule {
     @Profile("prod")
     @Scheduled(cron = "${cron.exp.blockchain.coinone-guhada-airdrop-update}")
     public void coinoneGuhadaAirdropUpdate() throws Exception {
-        blockchainWalletService.updateToken();
+        blockchainWalletService.tokenTransfer();
     }
 
 
