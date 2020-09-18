@@ -16,7 +16,6 @@ import org.web3j.protocol.exceptions.TransactionException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.contract.Contract;
-import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
@@ -94,10 +93,7 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
 		    caver.wallet.add(sender);
 	        caver.wallet.add(feePayer);
 	        
-	        LuckyDrawRequest luckyDrawRequest = new LuckyDrawRequest();
-	        luckyDrawRequest.setDealId(3056555);
-	        luckyDrawRequest.setUserId(85529);
-	        
+	        LuckyDrawRequest luckyDrawRequest = new LuckyDrawRequest();	        
 	        entry(luckyDrawRequest);
 	        	        
     	} catch (Exception e) {
