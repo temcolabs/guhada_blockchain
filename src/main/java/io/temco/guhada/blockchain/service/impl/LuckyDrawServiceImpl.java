@@ -92,7 +92,13 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
 		    sender = KeyringFactory.createFromPrivateKey(senderPrivateKey);
 		    
 		    caver.wallet.add(sender);
-	        caver.wallet.add(feePayer);	        	       
+	        caver.wallet.add(feePayer);
+	        
+	        LuckyDrawRequest luckyDrawRequest = new LuckyDrawRequest();
+	        luckyDrawRequest.setDealId(3056555);
+	        luckyDrawRequest.setUserId(85529);
+	        
+	        entry(luckyDrawRequest);
 	        	        
     	} catch (Exception e) {
 	    	e.printStackTrace();
@@ -139,17 +145,9 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
 						eventId,
 			            BigInteger.valueOf(luckyDrawRequest.getDealId()),
 			            BigInteger.valueOf(luckyDrawRequest.getUserId()),
-			            emailString));
-			
-			//TODO : caver 1.5버전에서 gas limit 받는거와 deprecated 된  DefaultGasProvider 로 비교 필요      
-	        CallObject callObject = CallObject.createCallObject(luckyDrawContractAddress);
-	        String gas = contract.getMethod("entry").estimateGas(Arrays.asList(
-	        		eventId,
-		            BigInteger.valueOf(luckyDrawRequest.getDealId()),
-		            BigInteger.valueOf(luckyDrawRequest.getUserId()),
-		            emailString), callObject);
+			            emailString));			
 
-			
+	        //caver 1.5버전에서 gas limit 받는거  deprecated 되었지만 사용 가낭하다고 답변
 			BigInteger gasLimit = new DefaultGasProvider().getGasLimit("entry");
 							      
 	        FeeDelegatedSmartContractExecution feeDelegatedSmartConstract = new FeeDelegatedSmartContractExecution.Builder()

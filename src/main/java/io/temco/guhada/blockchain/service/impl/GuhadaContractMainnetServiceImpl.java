@@ -105,14 +105,7 @@ public class GuhadaContractMainnetServiceImpl implements GuhadaContractMainnetSe
 	        		BigInteger.valueOf(guhadaTransact.getGuhadaTransactId()),
 	        		BigInteger.valueOf(guhadaTransact.getProductId()),
 	        		guhadaTransact.getHash()));
-	        
-	        //TODO : caver 1.5버전에서 gas limit 받는거와 deprecated 된  DefaultGasProvider 로 비교 필요      
-	        CallObject callObject = CallObject.createCallObject(delegationContract);
-	        String gas = contract.getMethod("insert").estimateGas(Arrays.asList(
-	        		BigInteger.valueOf(guhadaTransact.getGuhadaTransactId()),
-	        		BigInteger.valueOf(guhadaTransact.getProductId()),
-	        		guhadaTransact.getHash()), callObject);
-		    
+	        		   
 	        BigInteger gasLimit = new DefaultGasProvider().getGasLimit("insert");
 	
 	        FeeDelegatedSmartContractExecution feeDelegatedSmartConstract = new FeeDelegatedSmartContractExecution.Builder()
