@@ -1,12 +1,32 @@
 package io.temco.guhada.blockchain.service.impl;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Objects;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.web3j.protocol.exceptions.TransactionException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.Caver;
-import com.klaytn.caver.crypto.KlayCredentials;
-import com.klaytn.caver.fee.FeePayerManager;
-import com.klaytn.caver.methods.response.KlayTransactionReceipt;
-import com.klaytn.caver.tx.manager.TransactionManager;
-import com.klaytn.caver.tx.model.SmartContractExecutionTransaction;
-import com.klaytn.caver.utils.ChainId;
+import com.klaytn.caver.contract.Contract;
+import com.klaytn.caver.methods.request.CallObject;
+import com.klaytn.caver.methods.response.Bytes32;
+import com.klaytn.caver.methods.response.TransactionReceipt;
+import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
+import com.klaytn.caver.transaction.response.TransactionReceiptProcessor;
+import com.klaytn.caver.transaction.type.FeeDelegatedSmartContractExecution;
+import com.klaytn.caver.tx.gas.DefaultGasProvider;
+import com.klaytn.caver.wallet.keyring.KeyStore;
+import com.klaytn.caver.wallet.keyring.KeyringFactory;
+import com.klaytn.caver.wallet.keyring.SingleKeyring;
+
 import io.temco.guhada.blockchain.mapper.LuckyDrawMapper;
 import io.temco.guhada.blockchain.model.LuckyDrawModel;
 import io.temco.guhada.blockchain.model.request.LuckyDrawRequest;
@@ -14,22 +34,6 @@ import io.temco.guhada.blockchain.service.LuckyDrawService;
 import io.temco.guhada.blockchain.service.retrofit.ProductApiService;
 import io.temco.guhada.blockchain.smartcontract.LuckyDraw;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.Type;
-import org.web3j.abi.datatypes.Utf8String;
-import org.web3j.abi.datatypes.generated.Uint256;
-import org.web3j.tx.gas.DefaultGasProvider;
-import org.web3j.utils.Numeric;
-
-import javax.annotation.PostConstruct;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * Created by Shin Han
@@ -38,7 +42,8 @@ import java.util.Collections;
 @Service
 @Slf4j
 public class LuckyDrawServiceImpl implements LuckyDrawService {
-
+	
+	private final String ABI = "[{\"constant\":false,\"inputs\":[{\"name\":\"dealId\",\"type\":\"uint256\"}],\"name\":\"destoryDrawItem\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"dealId\",\"type\":\"uint256\"}],\"name\":\"draw\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"eventId\",\"type\":\"string\"},{\"name\":\"dealId\",\"type\":\"uint256\"},{\"name\":\"userId\",\"type\":\"uint256\"},{\"name\":\"userEmail\",\"type\":\"string\"}],\"name\":\"entry\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"string\"}],\"name\":\"entryUsers\",\"outputs\":[{\"name\":\"dealId\",\"type\":\"uint256\"},{\"name\":\"userId\",\"type\":\"uint256\"},{\"name\":\"userEmail\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"},{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"luckyDrawEntrys\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"luckyDrawWinner\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}]";
 
     private final LuckyDrawMapper luckyDrawMapper;
     private final ProductApiService productApiService;
@@ -52,28 +57,46 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
     @Value("${smart-contract.sender-public-key}")
     private String senderPublicKey;
     @Value("${smart-contract.lucky-draw-contract}")
-    private String luckyDrawContract;
+    private String luckyDrawContractAddress;
+    
+    @Value("${smart-contract.kestore-decryption}")
+	private String keyStoreDecrypt;
+    
     private final BigInteger gasLimit = BigInteger.valueOf(43000000l);
     private Caver caver;
     private LuckyDraw luckyDraw;
-    private KlayCredentials feePayer;
-    private KlayCredentials sender;
-    private KlayCredentials credentials;
+        
+    private SingleKeyring feePayer;
+    private SingleKeyring sender;
+    
+    private Contract contract;
 
     public LuckyDrawServiceImpl(LuckyDrawMapper luckyDrawMapper, ProductApiService productApiService) {
         this.luckyDrawMapper = luckyDrawMapper;
         this.productApiService = productApiService;
-    }
+    }        
 
     @PostConstruct
     private void initCaverJava(){
-
-        caver = Caver.build(Caver.MAINNET_URL);
-        feePayer = KlayCredentials.create(payerPrivateKey, payerPublicKey);
-        sender = KlayCredentials.create(senderPrivateKey);
-        credentials = KlayCredentials.create(senderPrivateKey);
-        luckyDraw = luckyDraw.load(luckyDrawContract, caver, credentials, ChainId.BAOBAB_TESTNET, new DefaultGasProvider());
-
+    	try {
+	        caver = new Caver(Caver.MAINNET_URL);
+	        contract = new Contract(caver, ABI, luckyDrawContractAddress);
+	        
+	        log.info("Contract Address : {}", contract.getContractAddress());
+	        
+	        ObjectMapper mapper = new ObjectMapper();
+		    FileReader file = new FileReader("src/main/resources/keystore.json");
+			KeyStore store = mapper.readValue(file, KeyStore.class);
+					    		
+		    feePayer = (SingleKeyring)KeyringFactory.decrypt(store, keyStoreDecrypt);
+		    sender = KeyringFactory.createFromPrivateKey(senderPrivateKey);
+		    
+		    caver.wallet.add(sender);
+	        caver.wallet.add(feePayer);	        	       
+	        	        
+    	} catch (Exception e) {
+	    	e.printStackTrace();
+	    }   
     }
 
 
@@ -103,72 +126,83 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
                 break;
             }
         }
-        log.error("transaction hash : {}" , transactionHash);
+        log.info("transaction hash : {}" , transactionHash);
         return transactionHash;
 
     }
 
     private String entryLuckyDraw(LuckyDrawRequest luckyDrawRequest, String eventId, String emailString) {
-        final Function function = new Function(
-                LuckyDraw.FUNC_ENTRY,
-                Arrays.<Type>asList(new Utf8String(eventId),
-                        new Uint256(BigInteger.valueOf(luckyDrawRequest.getDealId())),
-                        new Uint256(BigInteger.valueOf(luckyDrawRequest.getUserId())),
-                        new Utf8String(emailString)),
-                Collections.<TypeReference<?>>emptyList());
-        String encodeData = FunctionEncoder.encode(function);
-        SmartContractExecutionTransaction smartContractExecutionTransaction = SmartContractExecutionTransaction.create(
-                senderPublicKey,
-                luckyDrawContract,
-                BigInteger.ZERO,
-                Numeric.hexStringToByteArray(encodeData),
-                gasLimit);
+    	String transactionHash = null;
+    	try {        
+    		                	        
+			String encodeData = contract.getMethod("entry").encodeABI(Arrays.asList(
+						eventId,
+			            BigInteger.valueOf(luckyDrawRequest.getDealId()),
+			            BigInteger.valueOf(luckyDrawRequest.getUserId()),
+			            emailString));
+			
+			//TODO : caver 1.5버전에서 gas limit 받는거와 deprecated 된  DefaultGasProvider 로 비교 필요      
+	        CallObject callObject = CallObject.createCallObject(luckyDrawContractAddress);
+	        String gas = contract.getMethod("entry").estimateGas(Arrays.asList(
+	        		eventId,
+		            BigInteger.valueOf(luckyDrawRequest.getDealId()),
+		            BigInteger.valueOf(luckyDrawRequest.getUserId()),
+		            emailString), callObject);
 
-        TransactionManager transactionManager = new TransactionManager.Builder(caver,sender).setChaindId(ChainId.MAINNET).build();
-
-        String senderRawTransaction = transactionManager.sign(smartContractExecutionTransaction,true).getValueAsString();
-
-        FeePayerManager feePayerManager = new FeePayerManager.Builder(caver,feePayer).setChainId(ChainId.MAINNET).build();
-
-        KlayTransactionReceipt.TransactionReceipt transactionReceipt = feePayerManager.executeTransaction(senderRawTransaction);
-        if(transactionReceipt.getStatus().equals("0x1")){
-            return transactionReceipt.getTransactionHash();
-        }else{
-            return null;
-        }
+			
+			BigInteger gasLimit = new DefaultGasProvider().getGasLimit("entry");
+							      
+	        FeeDelegatedSmartContractExecution feeDelegatedSmartConstract = new FeeDelegatedSmartContractExecution.Builder()
+	        		.setKlaytnCall(caver.rpc.klay)
+	        		.setFrom(sender.getAddress())
+	        		.setTo(luckyDrawContractAddress)
+	        		.setInput(encodeData)
+	        		.setGas(gasLimit)
+		            .setFeePayer(feePayer.getAddress())
+	        		.build();
+	
+	        caver.wallet.sign(sender.getAddress(), feeDelegatedSmartConstract);
+	        caver.wallet.signAsFeePayer(feePayer.getAddress(), feeDelegatedSmartConstract);
+	        
+	        Bytes32 response = caver.rpc.klay.sendRawTransaction(feeDelegatedSmartConstract).send();
+	        TransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(caver, 1000, 30);
+	        TransactionReceipt.TransactionReceiptData receipt;			
+			receipt = processor.waitForTransactionReceipt(response.getResult());
+			transactionHash = receipt.getStatus().equals("0x1") ? receipt.getTransactionHash() : null;
+				        	        	        	             
+		} catch (IOException | ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException | TransactionException e) {
+			e.printStackTrace();
+		} 
+		return transactionHash;
     }
 
     @Override
     public Long draw(long dealId) throws Exception {
-        String transactionHash = "";
-        KlayTransactionReceipt.TransactionReceipt transactionReceipt;
+        String transactionHash = "";        
         while(true) {
-            try {
-                final Function function = new Function(
-                        LuckyDraw.FUNC_DRAW,
-                        Arrays.<Type>asList(new Uint256(dealId)),
-                        Collections.<TypeReference<?>>emptyList());
-            String encodeData = FunctionEncoder.encode(function);
-                BigInteger gasLimit = new DefaultGasProvider().getGasLimit(LuckyDraw.FUNC_DRAW);
-                SmartContractExecutionTransaction smartContractExecutionTransaction = SmartContractExecutionTransaction.create(
-                    senderPublicKey,
-                    luckyDrawContract,
-                    BigInteger.ZERO,
-                    Numeric.hexStringToByteArray(encodeData),
-                    gasLimit);
-
-            TransactionManager transactionManager = new TransactionManager.Builder(caver,sender).setChaindId(ChainId.MAINNET).build();
-
-            String senderRawTransaction = transactionManager.sign(smartContractExecutionTransaction,true).getValueAsString();
-
-            FeePayerManager feePayerManager = new FeePayerManager.Builder(caver,feePayer).setChainId(ChainId.MAINNET).build();
-            transactionReceipt = feePayerManager.executeTransaction(senderRawTransaction);
-            log.error("draw call error message : {}", transactionReceipt.getErrorMessage());
-
-            transactionHash = transactionReceipt.getTransactionHash();
-
-            if(!ObjectUtils.isEmpty(transactionHash)
-                && transactionReceipt.getStatus().equals("0x1")){
+        	try {            
+        		String encodeData = contract.getMethod("draw").encodeABI(Arrays.asList(dealId));
+            
+                //BigInteger gasLimit = new DefaultGasProvider().getGasLimit(LuckyDraw.FUNC_DRAW);
+        		FeeDelegatedSmartContractExecution feeDelegatedSmartConstract = new FeeDelegatedSmartContractExecution.Builder()
+    	        		.setKlaytnCall(caver.rpc.klay)
+    	        		.setFrom(sender.getAddress())
+    	        		.setTo(luckyDrawContractAddress)
+    	        		.setInput(encodeData)
+    	        		.setGas(gasLimit)
+    		            .setFeePayer(feePayer.getAddress())
+    	        		.build();
+    	
+    	        caver.wallet.sign(sender.getAddress(), feeDelegatedSmartConstract);
+    	        caver.wallet.signAsFeePayer(feePayer.getAddress(), feeDelegatedSmartConstract);
+    	        
+    	        Bytes32 response = caver.rpc.klay.sendRawTransaction(feeDelegatedSmartConstract).send();
+    	        TransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(caver, 1000, 30);
+    	        TransactionReceipt.TransactionReceiptData receipt;			
+    			receipt = processor.waitForTransactionReceipt(response.getResult());
+    			transactionHash = receipt.getStatus().equals("0x1") ? receipt.getTransactionHash() : null;
+    			
+            if(Objects.nonNull(transactionHash)){
                 break;
             }
             }catch (Exception ex){
@@ -178,7 +212,7 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
 
         Long luckyDrawWinner = getLuckyDrawWinner(dealId);
         productApiService.luckyDraw(new LuckyDrawRequest(dealId,luckyDrawWinner)).execute();
-        return luckyDrawWinner;
+        return luckyDrawWinner;    	
     }
 
     @Override
@@ -198,25 +232,32 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
 
     @Override
     public void delete(long dealId) {
-        final Function function = new Function(
-                LuckyDraw.FUNC_DESTORYDRAWITEM,
-                Arrays.<Type>asList(new Uint256(dealId)),
-                Collections.<TypeReference<?>>emptyList());
-        String encodeData = FunctionEncoder.encode(function);
-        SmartContractExecutionTransaction smartContractExecutionTransaction = SmartContractExecutionTransaction.create(
-                senderPublicKey,
-                luckyDrawContract,
-                BigInteger.ZERO,
-                Numeric.hexStringToByteArray(encodeData),
-                new DefaultGasProvider().getGasLimit(LuckyDraw.FUNC_DESTORYDRAWITEM));
+    	String transactionHash = "";      
+        String encodeData;
+		try {
+			encodeData = contract.getMethod("destoryDrawItem").encodeABI(Arrays.asList(dealId));
+			FeeDelegatedSmartContractExecution feeDelegatedSmartConstract = new FeeDelegatedSmartContractExecution.Builder()
+	        		.setKlaytnCall(caver.rpc.klay)
+	        		.setFrom(sender.getAddress())
+	        		.setTo(luckyDrawContractAddress)
+	        		.setInput(encodeData)
+	        		.setGas(gasLimit)
+		            .setFeePayer(feePayer.getAddress())
+	        		.build();
 
-        TransactionManager transactionManager = new TransactionManager.Builder(caver,sender).setChaindId(ChainId.MAINNET).build();
-
-        String senderRawTransaction = transactionManager.sign(smartContractExecutionTransaction,true).getValueAsString();
-
-        FeePayerManager feePayerManager = new FeePayerManager.Builder(caver,feePayer).setChainId(ChainId.MAINNET).build();
-
-        KlayTransactionReceipt.TransactionReceipt transactionReceipt = feePayerManager.executeTransaction(senderRawTransaction);
-        log.info(transactionReceipt.getTransactionHash());
+	        caver.wallet.sign(sender.getAddress(), feeDelegatedSmartConstract);
+	        caver.wallet.signAsFeePayer(feePayer.getAddress(), feeDelegatedSmartConstract);
+	        
+	        Bytes32 response = caver.rpc.klay.sendRawTransaction(feeDelegatedSmartConstract).send();
+	        TransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(caver, 1000, 30);
+	        TransactionReceipt.TransactionReceiptData receipt;			
+			receipt = processor.waitForTransactionReceipt(response.getResult());
+			transactionHash = receipt.getStatus().equals("0x1") ? receipt.getTransactionHash() : null;
+		} catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException
+				| InvocationTargetException | IOException | TransactionException e) {
+			e.printStackTrace();
+		}
+        
+        log.info("lucky draw {} event destoryed. transaction hash : {} ", dealId, transactionHash);
     }
 }

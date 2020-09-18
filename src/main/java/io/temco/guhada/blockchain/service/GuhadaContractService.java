@@ -13,7 +13,8 @@ public interface GuhadaContractService {
     List<GuhadaTransactResponse> getTransactData(long productId);
 
     void smartContractDeployFeeDelegation();
-
+    
+    @Deprecated
     GuhadaTransact uploadToBlockchainFeeDelegation(GuhadaTransactRequest guhadaTransactRequest) throws IOException;
 
 }

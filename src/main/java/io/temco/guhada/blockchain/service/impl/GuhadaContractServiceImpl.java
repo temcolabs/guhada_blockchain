@@ -167,18 +167,18 @@ public class GuhadaContractServiceImpl implements GuhadaContractService {
                 .setChaindId(ChainId.BAOBAB_TESTNET)
                 .build();
 
-        String senderRawTransaction
-                = transactionManager
-                .sign(smartContractDeployTransaction, true)
-                .getValueAsString();
-
-        String payer = "0xb52673131d1f9c35b641a037682b1d0ebd6ad9f176aa41b45f60545a2f8b1a9a";
-
-        KlayCredentials feePayer = KlayCredentials.create(payer);
-        FeePayerManager feePayerManager = new FeePayerManager.Builder(caver, feePayer).setChainId(ChainId.BAOBAB_TESTNET).build();
-        KlayTransactionReceipt.TransactionReceipt transactionReceipt = feePayerManager.executeTransaction(senderRawTransaction);
-
-        log.error(transactionReceipt.toString());
+//        String senderRawTransaction
+//                = transactionManager
+//                .sign(smartContractDeployTransaction, true)
+//                .getValueAsString();
+//
+//        String payer = "0xb52673131d1f9c35b641a037682b1d0ebd6ad9f176aa41b45f60545a2f8b1a9a";
+//
+//        KlayCredentials feePayer = KlayCredentials.create(payer);
+//        FeePayerManager feePayerManager = new FeePayerManager.Builder(caver, feePayer).setChainId(ChainId.BAOBAB_TESTNET).build();
+//        KlayTransactionReceipt.TransactionReceipt transactionReceipt = feePayerManager.executeTransaction(senderRawTransaction);
+//
+//        log.error(transactionReceipt.toString());
 
     }
 
@@ -206,18 +206,18 @@ public class GuhadaContractServiceImpl implements GuhadaContractService {
 
         TransactionManager transactionManager = new TransactionManager.Builder(caver,sender).setChaindId(ChainId.BAOBAB_TESTNET).build();
 
-        String senderRawTransaction = transactionManager.sign(smartContractExecutionTransaction,true).getValueAsString();
-
-        String payer = "0xb52673131d1f9c35b641a037682b1d0ebd6ad9f176aa41b45f60545a2f8b1a9a";
-
-        KlayCredentials feePayer = KlayCredentials.create(payer);
-
-        FeePayerManager feePayerManager = new FeePayerManager.Builder(caver,feePayer).setChainId(ChainId.BAOBAB_TESTNET).build();
-
-        KlayTransactionReceipt.TransactionReceipt transactionReceipt = feePayerManager.executeTransaction(senderRawTransaction);
-
-        log.debug(transactionReceipt.getTransactionHash());
-        log.debug(transactionReceipt.getErrorMessage());
+//        String senderRawTransaction = transactionManager.sign(smartContractExecutionTransaction,true).getValueAsString();
+//
+//        String payer = "0xb52673131d1f9c35b641a037682b1d0ebd6ad9f176aa41b45f60545a2f8b1a9a";
+//
+//        KlayCredentials feePayer = KlayCredentials.create(payer);
+//
+//        FeePayerManager feePayerManager = new FeePayerManager.Builder(caver,feePayer).setChainId(ChainId.BAOBAB_TESTNET).build();
+//
+//        KlayTransactionReceipt.TransactionReceipt transactionReceipt = feePayerManager.executeTransaction(senderRawTransaction);
+//
+//        log.debug(transactionReceipt.getTransactionHash());
+//        log.debug(transactionReceipt.getErrorMessage());
 
         return guhadaTransact;
     }

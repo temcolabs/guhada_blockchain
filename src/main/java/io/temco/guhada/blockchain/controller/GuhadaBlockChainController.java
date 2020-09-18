@@ -46,19 +46,22 @@ public class GuhadaBlockChainController {
     public void deployContract(){
         guhadaContractService.smartContractDeployFeeDelegation();
     }
-
+    
+    /**
+     * 
+     * point to testnet. deprecated. 
+     * 
+     * @param guhadaTransactRequest
+     * @return
+     * @throws Exception
+     */
+    @Deprecated
     @PostMapping("/upload-blockchain-delegation")
     @ApiOperation(value = "uploadToBlockchainFeeDelegation", notes = "")
     @ResponseBody
     public GuhadaTransact uploadToBlockchainFeeDelegation(@RequestBody GuhadaTransactRequest guhadaTransactRequest) throws Exception {
         return guhadaContractService.uploadToBlockchainFeeDelegation(guhadaTransactRequest);
-    }
-
-
-    @GetMapping("/deploy-contract-mainnet")
-    public void deployContractMainNet(){
-        guhadaContractMainnetService.smartContractDeployFeeDelegationMainNet();
-    }
+    }   
 
     @PostMapping("/upload-blockchain-delegation-mainnet")
     @ApiOperation(value = "uploadToBlockchainFeeDelegation", notes = "")

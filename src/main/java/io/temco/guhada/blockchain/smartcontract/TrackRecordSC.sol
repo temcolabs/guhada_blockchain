@@ -3,32 +3,33 @@ pragma solidity^0.5.6;
 contract TrackRecordSC{
 
     struct Record {
-        int transactId;
-        int productId;
+        uint orderId;
+        uint dealId;
+        string serialNumber;
         string productName;
         string brand;
-        int price;
+        uint price;
         string color;
         string owner;
         string hash;
     }
 
-    mapping(int => Record) private byTransactId;
-    mapping(int => int[]) private byProductId;
-
-    function insert(int transactId, int productId,  string memory productName, string memory brand,
-        int price, string memory color, string memory owner, string memory hash) public {
-        byTransactId[transactId] = Record(transactId, productId, productName, brand, price, color, owner, hash);
-        int[] storage transactions = byProductId[productId];
-        transactions.push(transactId);
-        byProductId[productId] = transactions;
+    mapping(uint => Record[]) private dealList;
+    
+    function addTransaction(uint orderId, uint dealId, string memory serialNumber, string memory productName, string memory brand,
+        uint price, string memory color, string memory owner, string memory hash) public {
+        dealList[dealId].push(Record(orderId, dealId, serialNumber, productName, brand, price, color, owner, hash));
     }
 
-    function getByProduct(int productId) public view returns(int[] memory) {
-        return byProductId[productId];
+    function getDealSize(uint dealId) public view returns(uint) {
+        return dealList[dealId].length;
+    }
+    
+    function getDeal(uint dealId, uint index) public view returns(uint, uint, string memory, string memory, string memory, uint, 
+        string memory, string memory, string memory){
+        Record memory dealRecord = dealList[dealId][index];
+        return (dealRecord.orderId, dealRecord.dealId, dealRecord.serialNumber, dealRecord.productName, dealRecord.brand, 
+            dealRecord.price, dealRecord.color, dealRecord.owner, dealRecord.hash);
     }
 
-    function getHash(int transactId) public view returns(string memory) {
-        return byTransactId[transactId].hash;
-    }
 }

@@ -9,9 +9,7 @@ import java.io.IOException;
  * Created by Shin Han
  * Since 2019-10-15
  */
-public interface GuhadaContractMainnetService {
-
-    void smartContractDeployFeeDelegationMainNet();
+public interface GuhadaContractMainnetService {    
 
     GuhadaTransact uploadToBlockchainFeeDelegationMainNet(GuhadaTransactRequest guhadaTransactRequest) throws IOException;
 }

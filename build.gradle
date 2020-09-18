@@ -35,6 +35,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok:1.18.8'
     runtime 'mysql:mysql-connector-java:8.0.13'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.0.0'
@@ -46,11 +47,11 @@ dependencies {
 
 //    compile files('src/main/java/libs/caverj-all-exclude-0.8.0.jar')
 
-    compile 'com.klaytn.caver:core:1.0.2'
+    compile 'com.klaytn.caver:core:1.5.2'
 
     // smart contract
-    implementation group: 'org.web3j', name: 'core', version: '4.2.0'
-    implementation group: 'org.web3j', name: 'contracts', version: '4.2.0'
+    implementation group: 'org.web3j', name: 'core', version: '4.4.1'
+    implementation group: 'org.web3j', name: 'contracts', version: '4.4.1'
     // swagger
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
@@ -71,8 +72,12 @@ dependencies {
     implementation "org.apache.commons:commons-lang3"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
-//    implementation group: 'io.temco.guhada', name: 'guhada-framework', version: '0.0.1-SNAPSHOT', changing: true
-        compile project(':guhada_framework')
+    implementation (group: 'io.temco.guhada', name: 'guhada-framework', version: '0.0.1-SNAPSHOT', changing: true) {
+        exclude (group:'io.springfox', module:'springfox-swagger-ui')
+        exclude (group:'io.springfox', module:'springfox-swagger2')
+    }
+    //compile project(':guhada_framework')
+
 
     //region retrofit2 dependency
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
