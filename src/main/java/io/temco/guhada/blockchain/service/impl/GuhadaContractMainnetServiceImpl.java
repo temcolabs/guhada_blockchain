@@ -1,15 +1,19 @@
 package io.temco.guhada.blockchain.service.impl;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.Arrays;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.exceptions.TransactionException;
 
@@ -77,13 +81,24 @@ public class GuhadaContractMainnetServiceImpl implements GuhadaContractMainnetSe
 	        
 	        log.info("Contract Address : {}", contract.getContractAddress());
 	        
-	        ObjectMapper mapper = new ObjectMapper();
-		    FileReader file = new FileReader("src/main/resources/keystore.json");
+	        ObjectMapper mapper = new ObjectMapper();	    
+	        
+	        ClassPathResource resource = new ClassPathResource("keystore.json");	    
+	 
+	        InputStream inputStream = resource.getInputStream();
+	        File file = File.createTempFile("keystore", ".json");
+	        FileUtils.copyInputStreamToFile(inputStream, file);
+	        inputStream.close();
+	         	        
+	        log.info("File Found for keystore.json : " + file.exists());	 
+	        
 			KeyStore store = mapper.readValue(file, KeyStore.class);
 					    		
 		    feePayer = (SingleKeyring)KeyringFactory.decrypt(store, keyStoreDecrypt);
 		    sender = KeyringFactory.createFromPrivateKey(senderPrivateKey);
 		    
+		    log.info("feePayer Address : {}", feePayer.getAddress());
+		    log.info("sender Address : {}", sender.getAddress());
 		    caver.wallet.add(sender);
 	        caver.wallet.add(feePayer);	        	       
 	        	        

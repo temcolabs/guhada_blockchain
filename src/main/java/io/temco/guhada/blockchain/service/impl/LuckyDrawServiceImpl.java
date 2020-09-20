@@ -1,7 +1,9 @@
 package io.temco.guhada.blockchain.service.impl;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -9,8 +11,11 @@ import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.web3j.protocol.exceptions.TransactionException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -81,22 +86,30 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
 	        caver = new Caver(Caver.MAINNET_URL);
 	        contract = new Contract(caver, ABI, luckyDrawContractAddress);
 	        
-	        log.info("Contract Address : {}", contract.getContractAddress());
+	        log.info("Contract Address 2: {}", contract.getContractAddress());
 	        
-	        ObjectMapper mapper = new ObjectMapper();
-		    FileReader file = new FileReader("src/main/resources/keystore.json");
+	        ObjectMapper mapper = new ObjectMapper();	    
+	        
+	        ClassPathResource resource = new ClassPathResource("keystore.json");	    
+	 
+	        InputStream inputStream = resource.getInputStream();
+	        File file = File.createTempFile("keystore", ".json");
+	        FileUtils.copyInputStreamToFile(inputStream, file);
+	        inputStream.close();
+	         	        
+	        log.info("File Found for keystore.json : " + file.exists());	 
+	        
 			KeyStore store = mapper.readValue(file, KeyStore.class);
 					    		
 		    feePayer = (SingleKeyring)KeyringFactory.decrypt(store, keyStoreDecrypt);
 		    sender = KeyringFactory.createFromPrivateKey(senderPrivateKey);
 		    
+		    log.info("feePayer Address : {}", feePayer.getAddress());
+		    log.info("sender Address : {}", sender.getAddress());
 		    caver.wallet.add(sender);
-	        caver.wallet.add(feePayer);
-	        
-	        LuckyDrawRequest luckyDrawRequest = new LuckyDrawRequest();	        
-	        entry(luckyDrawRequest);
-	        	        
+	        caver.wallet.add(feePayer);	        	        	        	        
     	} catch (Exception e) {
+    		log.error("lucky draw init : {}", e.getMessage());
 	    	e.printStackTrace();
 	    }   
     }
@@ -136,7 +149,7 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
     private String entryLuckyDraw(LuckyDrawRequest luckyDrawRequest, String eventId, String emailString) {
     	String transactionHash = null;
     	try {        
-    		                	        
+    		log.info("luckdraw deal id : {}, user id : {}, email : {}" , luckyDrawRequest.getDealId(), luckyDrawRequest.getUserId(), emailString);                	        
 			String encodeData = contract.getMethod("entry").encodeABI(Arrays.asList(
 						eventId,
 			            BigInteger.valueOf(luckyDrawRequest.getDealId()),
@@ -145,7 +158,7 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
 
 	        //caver 1.5버전에서 gas limit 받는거  deprecated 되었지만 사용 가낭하다고 답변
 			BigInteger gasLimit = new DefaultGasProvider().getGasLimit("entry");
-							      
+			log.info("luckdraw gas limit : {}" , gasLimit.toString());				      
 	        FeeDelegatedSmartContractExecution feeDelegatedSmartConstract = new FeeDelegatedSmartContractExecution.Builder()
 	        		.setKlaytnCall(caver.rpc.klay)
 	        		.setFrom(sender.getAddress())
@@ -154,14 +167,16 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
 	        		.setGas(gasLimit)
 		            .setFeePayer(feePayer.getAddress())
 	        		.build();
-	
+	        log.info("luckdraw prepare sign transaction sender adderess : {}, fee payer address : {}", sender.getAddress(), feePayer.getAddress() );
 	        caver.wallet.sign(sender.getAddress(), feeDelegatedSmartConstract);
+	        log.info("luckdraw prepare sign transaction sign sender complete.");
 	        caver.wallet.signAsFeePayer(feePayer.getAddress(), feeDelegatedSmartConstract);
-	        
+	        log.info("luckdraw complete prepare sign transaction");
 	        Bytes32 response = caver.rpc.klay.sendRawTransaction(feeDelegatedSmartConstract).send();
+	        log.info("luckdraw response : ", response.getResult());
 	        TransactionReceiptProcessor processor = new PollingTransactionReceiptProcessor(caver, 1000, 30);
-	        TransactionReceipt.TransactionReceiptData receipt;			
-			receipt = processor.waitForTransactionReceipt(response.getResult());
+	        TransactionReceipt.TransactionReceiptData receipt = processor.waitForTransactionReceipt(response.getResult());
+	        log.info("luckdraw final transaction receipt : ", receipt.getStatus());
 			transactionHash = receipt.getStatus().equals("0x1") ? receipt.getTransactionHash() : null;
 				        	        	        	             
 		} catch (IOException | ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException | TransactionException e) {
