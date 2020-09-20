@@ -86,7 +86,7 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
 	        caver = new Caver(Caver.MAINNET_URL);
 	        contract = new Contract(caver, ABI, luckyDrawContractAddress);
 	        
-	        log.info("Contract Address 2: {}", contract.getContractAddress());
+	        log.info("Contract Address: {}", contract.getContractAddress());
 	        
 	        ObjectMapper mapper = new ObjectMapper();	    
 	        
@@ -157,7 +157,7 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
 			            emailString));			
 
 	        //caver 1.5버전에서 gas limit 받는거  deprecated 되었지만 사용 가낭하다고 답변
-			BigInteger gasLimit = new DefaultGasProvider().getGasLimit("entry");
+			BigInteger gasLimit = new DefaultGasProvider().getGasLimit(LuckyDraw.FUNC_ENTRY);
 			log.info("luckdraw gas limit : {}" , gasLimit.toString());				      
 	        FeeDelegatedSmartContractExecution feeDelegatedSmartConstract = new FeeDelegatedSmartContractExecution.Builder()
 	        		.setKlaytnCall(caver.rpc.klay)
@@ -192,7 +192,7 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
         	try {            
         		String encodeData = contract.getMethod("draw").encodeABI(Arrays.asList(dealId));
             
-                //BigInteger gasLimit = new DefaultGasProvider().getGasLimit(LuckyDraw.FUNC_DRAW);
+                BigInteger gasLimit = new DefaultGasProvider().getGasLimit(LuckyDraw.FUNC_DRAW);
         		FeeDelegatedSmartContractExecution feeDelegatedSmartConstract = new FeeDelegatedSmartContractExecution.Builder()
     	        		.setKlaytnCall(caver.rpc.klay)
     	        		.setFrom(sender.getAddress())
