@@ -1,12 +1,12 @@
 package io.temco.guhada.blockchain.service.impl;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.PostConstruct;
@@ -15,12 +15,13 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
+import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.exceptions.TransactionException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.Caver;
 import com.klaytn.caver.contract.Contract;
+import com.klaytn.caver.methods.request.CallObject;
 import com.klaytn.caver.methods.response.Bytes32;
 import com.klaytn.caver.methods.response.TransactionReceipt;
 import com.klaytn.caver.transaction.response.PollingTransactionReceiptProcessor;
@@ -234,9 +235,12 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
     }
 
     @Override
-    public Long getLuckyDrawWinner(long dealId) throws Exception {
-        String response = luckyDraw.luckyDrawWinner(BigInteger.valueOf(dealId)).send();
-        return Long.valueOf(response.split("_")[1]);
+    public Long getLuckyDrawWinner(long dealId) throws Exception {    	    	
+        List<Type> result = contract.getMethod("luckyDrawWinner").call(Arrays.asList(BigInteger.valueOf(dealId)), CallObject.createCallObject());
+        log.info("Luckdraw winner : " + (String)result.get(0).getValue());
+        String winnerUserId = result.get(0).getValue().toString().split("_")[1];
+        log.info("Luckdraw winner user id : " + winnerUserId);               
+        return Long.valueOf(winnerUserId);
     }
 
     @Override
