@@ -1,5 +1,8 @@
 package io.temco.guhada.blockchain.model.request;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,10 +28,10 @@ public class TrackRecord {
 	private int trackRecordId;
 	
 	@Column(name="order_id")
-	private long orderId;
+	private Long orderId;
 	
 	@Column(name="deal_id")
-    private long dealId;
+    private Long dealId;
 	
 	@Column(name="serial_id")
     private String serialId = "";    
@@ -40,7 +43,7 @@ public class TrackRecord {
     private String brandName;
     
 	@Column(name="price")
-    private long price;
+    private BigDecimal price;
     
 	@Column(name="color")
     private String color = "";
@@ -53,5 +56,11 @@ public class TrackRecord {
 	
 	@Column(name="tx")
     private String txUrl;
+	
+	@Column(insertable = false, updatable = false)
+	private LocalDateTime createdAt;
+    
+    @Column(insertable = false, updatable = false)
+	private LocalDateTime updatedAt;
         
 }

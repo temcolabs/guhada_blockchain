@@ -9,4 +9,6 @@ public interface TrackRecordService {
 	void uploadProductInfo(TrackRecord trackRecordRequest);
 	
 	List<TrackRecord> getProductTransactions(int dealId);
+	
+	void testUpload();
 }

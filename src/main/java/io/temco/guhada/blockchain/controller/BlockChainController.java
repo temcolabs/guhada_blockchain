@@ -1,27 +1,44 @@
-//package io.temco.guhada.blockchain.controller;
-//
-//import io.swagger.annotations.Api;
-//import io.swagger.annotations.ApiOperation;
-//import io.swagger.annotations.ApiParam;
-//import io.temco.guhada.blockchain.model.request.CompanyRequest;
-//import io.temco.guhada.blockchain.model.request.GenerateQrCodeRequest;
-//import io.temco.guhada.blockchain.model.request.TransactRequest;
+package io.temco.guhada.blockchain.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.temco.guhada.blockchain.model.request.CompanyRequest;
+import io.temco.guhada.blockchain.model.request.GenerateQrCodeRequest;
+import io.temco.guhada.blockchain.model.request.TransactRequest;
+import io.temco.guhada.blockchain.service.TrackRecordService;
 //import io.temco.guhada.blockchain.model.response.BlockChainInfo;
 //import io.temco.guhada.blockchain.model.response.CompanyResponse;
 //import io.temco.guhada.blockchain.model.response.GenerateQrCodeResponse;
 //import io.temco.guhada.blockchain.model.response.UploadToBlockchainResponse;
 //import io.temco.guhada.blockchain.service.SmartContractService;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.web.bind.annotation.*;
-//
-//@Slf4j
-//@RestController
-//@RequestMapping(value = "/api/blockchain")
-//@Api(basePath = "/api/blockchain", description = "상품과 물류정보를 블록체인에 올리고 확인하는 API들")
-//public class BlockChainController {
-//
-//
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RestController
+@RequestMapping(value = "/api/blockchain")
+@Api(basePath = "/api/blockchain", description = "상품과 물류정보를 블록체인에 올리고 확인하는 API들")
+public class BlockChainController {
+
+	@Autowired
+	private TrackRecordService trackRecordService;
+
+	@PostMapping("/testUpload")	
+	@ResponseBody
+	public void testUpload() throws Exception {
+		trackRecordService.testUpload();
+	}
+
 //    @Autowired
 //    private SmartContractService smartContractService;
 //
@@ -58,5 +75,5 @@
 //    public CompanyResponse registerCompany(@ApiParam(name = "companyRequest", required = true)CompanyRequest companyRequest) throws Exception {
 //        return smartContractService.registerCompany(companyRequest);
 //    }
-//
-//}
+
+}
