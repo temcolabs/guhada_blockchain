@@ -20,12 +20,13 @@ apply plugin: 'io.spring.dependency-management'
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
     maven {
+        url "http://3.35.145.92:8080/nexus/repository/snapshots"
         credentials {
             username = 'deployer'
             password = 'T3mc0n3Xus@dmin'
         }
-        url "http://52.79.243.78:8080/nexus/repository/public"
     }
 }
 
