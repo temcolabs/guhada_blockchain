@@ -48,7 +48,7 @@ smart-contract:
   sender-public-key : '0xbb1da7aa9ea4005298f28a2e9579e412a856a5ff'
   delegation-contract : '0x2e160a2b643c630e540243725764112f1bfdb1b3'
   lucky-draw-contract : '0x11d88F9940cBC0c4238b61ADF401b242Fd5514eE'
-  track-record-contract : '0x1e4726d4FF3f01B1e1eBe166E6530985222551eF'
+  track-record-contract : '0x35AE79fDFF6586b2aed65CC3ddA810b418A21653'
   guhada-account: ENC('jDMMBySGK55pChp0mEm3yLYRgofadq4pQLBmaWuCgBEIk4tleRqzJdZeCg0b7OZQT39z+FZBst9dhLxuaUSkDFrVkh+pav8Zksd1Eun11Vc=')
   kestore-decryption : ENC('XEgIk3wLNhetw+0KOEHtt82EZBEelhBq')
 
