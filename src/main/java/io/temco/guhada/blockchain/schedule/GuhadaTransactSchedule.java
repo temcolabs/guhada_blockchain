@@ -49,15 +49,6 @@ public class GuhadaTransactSchedule {
         this.trackRecordService = trackRecordService;
     }
 
-    @PostConstruct
-    private void init() {
-    	try {
-			trackRecordUploadExecuter();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    }
-
     @Scheduled(cron = "${cron.exp.blockchain.upload-deal}")
     public void blockChainUploadExecuter() throws Exception {
         if("local".equals(profilesName) || StringUtils.isEmpty(profilesName)) {

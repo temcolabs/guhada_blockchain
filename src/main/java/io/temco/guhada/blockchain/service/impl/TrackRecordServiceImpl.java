@@ -101,8 +101,7 @@ public class TrackRecordServiceImpl implements TrackRecordService {
 		    log.info("feePayer Address : {}", feePayer.getAddress());
 		    log.info("sender Address : {}", sender.getAddress());
 		    caver.wallet.add(sender);
-	        caver.wallet.add(feePayer);
-	        
+	        caver.wallet.add(feePayer);	        
     	} catch (Exception e) {
     		log.error("track record init exception : {}", e.getMessage());
 	    	e.printStackTrace();
@@ -186,11 +185,16 @@ public class TrackRecordServiceImpl implements TrackRecordService {
 
 	
 	@Override
-	public List<TrackRecord> getProductTransactions(int dealId) {
+	public List<TrackRecord> getProductTransactions(Long dealId) {
 		List<TrackRecord> productTransactions = new ArrayList<TrackRecord>();		
 		try {			
 			List<Type> dealSizeResult = contract.getMethod("getDealSize").call(Arrays.asList(BigInteger.valueOf(dealId)), CallObject.createCallObject());			
 			int transactionSize = ((Uint256) dealSizeResult.get(0)).getValue().intValue();
+			TrackRecord trackRecord = trackRecordRepository.findTopByDealIdOrderByCreatedAtDesc(dealId).orElse(null);
+			if(trackRecord == null) {
+				log.info("transaction record on db is null, deal id : " + dealId.toString());
+				return productTransactions;
+			}
 			for(int i = 0; i < transactionSize; i++) {
 				List<Type> dealResult = contract.getMethod("getDeal").call(Arrays.asList(BigInteger.valueOf(dealId), i), CallObject.createCallObject());
 				TrackRecord transaction = new TrackRecord();
@@ -203,6 +207,7 @@ public class TrackRecordServiceImpl implements TrackRecordService {
 				transaction.setColor(dealResult.get(6).getValue().toString());
 				transaction.setOwner(dealResult.get(7).getValue().toString());
 				transaction.setHash(dealResult.get(8).getValue().toString());
+				transaction.setTxUrl("https://scope.klaytn.com/tx/" + trackRecord.getTxUrl());
 				productTransactions.add(transaction);
 			}										
 		} catch (Exception e) {
