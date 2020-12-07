@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -18,6 +19,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.generated.Int256;
+import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.gas.DefaultGasProvider;
 
@@ -100,9 +103,8 @@ public class TrackRecordServiceImpl implements TrackRecordService {
 		    caver.wallet.add(sender);
 	        caver.wallet.add(feePayer);
 	        
-	        //this.testUpload();
     	} catch (Exception e) {
-    		log.error("lucky draw init : {}", e.getMessage());
+    		log.error("track record init exception : {}", e.getMessage());
 	    	e.printStackTrace();
 	    }   
     }
@@ -110,11 +112,11 @@ public class TrackRecordServiceImpl implements TrackRecordService {
     public void testUpload() {
     	TrackRecord trackRecord = new TrackRecord();
     	trackRecord.setOrderId(0L);
-    	trackRecord.setDealId(3456525L);
-    	trackRecord.setSerialId("525721 W0650 1006");
-    	trackRecord.setProductName("20FW 발렌시아가 스니커즈 525721 W0650 1006");
-    	trackRecord.setBrandName("BALENCIAGA");
-    	trackRecord.setPrice(new BigDecimal(722000));
+    	trackRecord.setDealId(3866755L);
+    	trackRecord.setSerialId("RL5004 205 A100");
+    	trackRecord.setProductName("21SS 멀버리 핸드백 RL5004 205 A100");
+    	trackRecord.setBrandName("Mulberry");
+    	trackRecord.setPrice(new BigDecimal(708000));
     	trackRecord.setColor("");
     	trackRecord.setOwner("TheBase");
     	trackRecord.setHash(HashUtils.getSha(trackRecord.toString()));
@@ -135,32 +137,16 @@ public class TrackRecordServiceImpl implements TrackRecordService {
 		try {       
 			
 			String encodeData = contract.getMethod("addTransaction").encodeABI(Arrays.asList(
-					BigInteger.valueOf(trackRecordRequest.getOrderId().intValue()),
+					trackRecordRequest.getOrderId() == null ? BigInteger.valueOf(0) : BigInteger.valueOf(trackRecordRequest.getOrderId().intValue()),					
 	                BigInteger.valueOf(trackRecordRequest.getDealId().intValue()),
-	                trackRecordRequest.getSerialId(),
+	                Optional.ofNullable(trackRecordRequest.getSerialId()).orElse(""),
 	                trackRecordRequest.getProductName(),
 	                trackRecordRequest.getBrandName(),
 	                BigInteger.valueOf(trackRecordRequest.getPrice().intValue()),
-	                trackRecordRequest.getColor(),
+	                Optional.ofNullable(trackRecordRequest.getColor()).orElse(""),
 	                trackRecordRequest.getOwner(),                        
 	                trackRecordRequest.getHash()));
-			
-					
-	//        final Function function = new Function(
-	//                TrackRecordSC.FUNC_ADDTRANSACTION,
-	//                Arrays.<Type>asList(
-	//                		new Uint256(BigInteger.valueOf(trackRecordRequest.getOrderId())),
-	//                        new Uint256(BigInteger.valueOf(trackRecordRequest.getDealId())),
-	//                        new Utf8String(trackRecordRequest.getSerialId()),
-	//                        new Utf8String(trackRecordRequest.getProductName()),
-	//                        new Utf8String(trackRecordRequest.getBrandName()),
-	//                        new Uint256(BigInteger.valueOf(trackRecordRequest.getPrice())),
-	//                        new Utf8String(trackRecordRequest.getColor()),
-	//                        new Utf8String(trackRecordRequest.getOwner()),                        
-	//                        new Utf8String(trackRecordRequest.getHash())),
-	//                Collections.<TypeReference<?>>emptyList());
-	//        String encodeData = FunctionEncoder.encode(function);
-			
+										
 			BigInteger gasLimit = new DefaultGasProvider().getGasLimit("addTransaction");
 			log.info("track record gas limit : {}" , gasLimit.toString());				      
 	        FeeDelegatedSmartContractExecution feeDelegatedSmartConstract = new FeeDelegatedSmartContractExecution.Builder()
@@ -202,40 +188,23 @@ public class TrackRecordServiceImpl implements TrackRecordService {
 	@Override
 	public List<TrackRecord> getProductTransactions(int dealId) {
 		List<TrackRecord> productTransactions = new ArrayList<TrackRecord>();		
-		try {
-			
-			List<Type> retrunResult = contract.getMethod("getDealSize").call(Arrays.asList(BigInteger.valueOf(dealId)), CallObject.createCallObject());			
-//			((ArrayList) retrunResult.get(0).getValue()).forEach(element -> packIdList.add(Long.valueOf(((Int256)element).getValue().longValue())));
-//			
-//			BigInteger response = contract.getDealSize(BigInteger.valueOf(dealId)).send();
-//			
-//			List<Type> retrunResult = contract.getMethod("getDeal").call(Arrays.asList(BigInteger.valueOf(packId.intValue())), CallObject.createCallObject());	        
-//	        result.setBundleId(Long.valueOf(((BigInteger)retrunResult.get(0).getValue()).toString()));
-//			result.setPackId(Long.valueOf(((BigInteger)retrunResult.get(1).getValue()).toString()));			
-//			result.setSortDate(retrunResult.get(2).getValue().toString());
-//			result.setUserCode(retrunResult.get(3).getValue().toString());
-//			result.setRank(retrunResult.get(4).getValue().toString());
-//			result.setUnitSize(retrunResult.get(5).getValue().toString());						
-//			result.setWeight(new BigDecimal((BigInteger)retrunResult.get(6).getValue()));
-//			result.setGoodsType(retrunResult.get(7).getValue().toString());
-//			
-//			
-//			BigInteger response = trackRecordSc.getDealSize(BigInteger.valueOf(dealId)).send();
-//			for(int i = 0; i < response.intValue(); i++) {
-//				Tuple9<BigInteger, BigInteger, String, String, String, BigInteger, String, String, String> result 
-//					= trackRecordSc.getDeal(BigInteger.valueOf(dealId), BigInteger.valueOf(i)).send();
-//				TrackRecord transaction = new TrackRecord();
-//				transaction.setOrderId(result.getValue1().longValue());
-//				transaction.setDealId(result.getValue2().longValue());
-//				transaction.setSerialId(result.getValue3());
-//				transaction.setProductName(result.getValue4());
-//				transaction.setBrandName(result.getValue5());
-//				transaction.setPrice(result.getValue6().longValue());
-//				transaction.setColor(result.getValue7());
-//				transaction.setOwner(result.getValue8());
-//				transaction.setHash(result.getValue9());
-//				productTransactions.add(transaction);
-//			}									
+		try {			
+			List<Type> dealSizeResult = contract.getMethod("getDealSize").call(Arrays.asList(BigInteger.valueOf(dealId)), CallObject.createCallObject());			
+			int transactionSize = ((Uint256) dealSizeResult.get(0)).getValue().intValue();
+			for(int i = 0; i < transactionSize; i++) {
+				List<Type> dealResult = contract.getMethod("getDeal").call(Arrays.asList(BigInteger.valueOf(dealId), i), CallObject.createCallObject());
+				TrackRecord transaction = new TrackRecord();
+				transaction.setOrderId(((BigInteger)dealResult.get(0).getValue()).longValue());
+				transaction.setDealId(((BigInteger)dealResult.get(1).getValue()).longValue());
+				transaction.setSerialId(dealResult.get(2).getValue().toString());
+				transaction.setProductName(dealResult.get(3).getValue().toString());
+				transaction.setBrandName(dealResult.get(4).getValue().toString());
+				transaction.setPrice(new BigDecimal(((BigInteger)dealResult.get(5).getValue()).doubleValue()));
+				transaction.setColor(dealResult.get(6).getValue().toString());
+				transaction.setOwner(dealResult.get(7).getValue().toString());
+				transaction.setHash(dealResult.get(8).getValue().toString());
+				productTransactions.add(transaction);
+			}										
 		} catch (Exception e) {
 			e.printStackTrace();
 		}        

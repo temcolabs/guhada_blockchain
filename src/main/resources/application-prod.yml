@@ -66,4 +66,4 @@ cron:
       upload-deal : 0 * 3-6 * * ?
       guhada-airdrop-update : 0 0 12 * * ?
       coinone-guhada-airdrop-update : 0 0 0 * * ?
-      track-record-upload-blockchain : 0 0 12  * * ?
+      track-record-upload-blockchain: 0 10 12 * * ? # 배치 21:10 KST      

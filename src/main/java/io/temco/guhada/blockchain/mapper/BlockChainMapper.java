@@ -1,5 +1,6 @@
 package io.temco.guhada.blockchain.mapper;
 
+import io.temco.guhada.blockchain.model.request.TrackRecord;
 import io.temco.guhada.blockchain.model.response.UnregisteredDeal;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -31,5 +32,14 @@ public interface BlockChainMapper {
             "WHERE guhada_transact.guhada_transact_id is null\n" +
             "LIMIT 25;\n")
     List<UnregisteredDeal> getUnregisteredDeal();
+    
+    
+    @Select("select dl.id as dealId, pd.model_number as serialId, pd.name as productName, br.name_default as brandName, dl.sell_price as price, user.nickname as owner \r\n" + 
+    		"from deal dl \r\n" + 
+    		"INNER JOIN product pd ON pd.id = dl.product_id\r\n" + 
+    		"INNER JOIN brand br ON br.id = pd.brand_id\r\n" + 
+    		"INNER JOIN user ON user.id = dl.seller_id\r\n" + 
+    		"where dl.id not in (select deal_id from track_record) and dl.status = 'SALE' limit 1000;")
+    List<TrackRecord> getUnregisteredBlockchainDeal();
 
 }
