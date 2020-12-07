@@ -1,5 +1,7 @@
 package io.temco.guhada.blockchain.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.temco.guhada.blockchain.model.request.CompanyRequest;
 import io.temco.guhada.blockchain.model.request.GenerateQrCodeRequest;
+import io.temco.guhada.blockchain.model.request.TrackRecord;
 import io.temco.guhada.blockchain.model.request.TransactRequest;
 import io.temco.guhada.blockchain.service.TrackRecordService;
 //import io.temco.guhada.blockchain.model.response.BlockChainInfo;
@@ -38,6 +41,20 @@ public class BlockChainController {
 	public void testUpload() throws Exception {
 		trackRecordService.testUpload();
 	}
+	
+	
+	/**
+	 * get deal data from  blockchain.  
+	 * 
+	 * @param dealId : deal id
+	 */
+	@GetMapping("/getProductTransactions")	
+	@ResponseBody
+	public List<TrackRecord> getProductTransactions(Long dealId) throws Exception {
+		return trackRecordService.getProductTransactions(dealId);
+	}
+	
+	
 
 //    @Autowired
 //    private SmartContractService smartContractService;
