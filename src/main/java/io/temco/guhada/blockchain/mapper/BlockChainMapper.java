@@ -39,7 +39,7 @@ public interface BlockChainMapper {
     		"INNER JOIN product pd ON pd.id = dl.product_id\r\n" + 
     		"INNER JOIN brand br ON br.id = pd.brand_id\r\n" + 
     		"INNER JOIN user ON user.id = dl.seller_id\r\n" + 
-    		"where dl.id not in (select deal_id from track_record) and dl.status = 'SALE' limit 10000;")
+    		"where dl.id not in (select deal_id from track_record) and dl.status = 'SALE' limit 9000;")
     List<TrackRecord> getUnregisteredBlockchainDeal();
 
 }
