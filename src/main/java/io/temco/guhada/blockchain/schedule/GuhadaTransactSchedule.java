@@ -47,7 +47,7 @@ public class GuhadaTransactSchedule {
         this.blockChainMapper = blockChainMapper;
         this.guhadaContractService = guhadaContractService;
         this.trackRecordService = trackRecordService;
-    }
+    }        
 
     @Scheduled(cron = "${cron.exp.blockchain.upload-deal}")
     public void blockChainUploadExecuter() throws Exception {
@@ -71,7 +71,7 @@ public class GuhadaTransactSchedule {
     
     @Scheduled(cron = "${cron.exp.blockchain.track-record-upload-blockchain}")
     public void trackRecordUploadExecuter() throws Exception {
-        if("local".equals(profilesName) || StringUtils.isEmpty(profilesName)) {
+        if(!"prod".equals(profilesName)) {
             return;
         }
         log.info("block chain register deal btach started.");
