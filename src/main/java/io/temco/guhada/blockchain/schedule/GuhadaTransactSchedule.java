@@ -47,7 +47,7 @@ public class GuhadaTransactSchedule {
         this.trackRecordService = trackRecordService;
     }        
 
-    @Scheduled(cron = "${cron.exp.blockchain.upload-deal}")
+    @Deprecated
     public void blockChainUploadExecuter() throws Exception {
         if("local".equals(profilesName) || StringUtils.isEmpty(profilesName)) {
             return;
