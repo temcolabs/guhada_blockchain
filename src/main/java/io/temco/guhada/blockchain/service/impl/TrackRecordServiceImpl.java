@@ -68,10 +68,10 @@ public class TrackRecordServiceImpl implements TrackRecordService {
 	@Value("${smart-contract.kestore-decryption}")
 	private String keyStoreDecrypt;
 	
-	@Value("${kas-access-key}")
+	@Value("${smart-contract.kas-access-key}")
 	private String kasAccessKey;
     
-	@Value("${kas-secrect-access-key}")
+	@Value("${smart-contract.kas-secrect-access-key}")
     private String secretAccessKey;
         
     private Caver caver;

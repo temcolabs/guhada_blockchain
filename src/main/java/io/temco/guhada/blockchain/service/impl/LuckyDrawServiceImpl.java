@@ -67,10 +67,10 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
     @Value("${smart-contract.kestore-decryption}")
 	private String keyStoreDecrypt;
     
-    @Value("${kas-access-key}")
+    @Value("${smart-contract.kas-access-key}")
 	private String kasAccessKey;
     
-	@Value("${kas-secrect-access-key}")
+	@Value("${smart-contract.kas-secrect-access-key}")
     private String secretAccessKey;
     
     private final BigInteger gasLimit = BigInteger.valueOf(43000000l);
