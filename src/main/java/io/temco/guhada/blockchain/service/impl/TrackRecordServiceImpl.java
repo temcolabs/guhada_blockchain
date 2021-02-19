@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,9 +20,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.web3j.abi.datatypes.Type;
-import org.web3j.abi.datatypes.generated.Int256;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.protocol.exceptions.TransactionException;
+import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.DefaultGasProvider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,9 +41,9 @@ import com.klaytn.caver.wallet.keyring.SingleKeyring;
 import io.temco.guhada.blockchain.model.request.TrackRecord;
 import io.temco.guhada.blockchain.repository.TrackRecordRepository;
 import io.temco.guhada.blockchain.service.TrackRecordService;
-import io.temco.guhada.blockchain.smartcontract.LuckyDraw;
 import io.temco.guhada.blockchain.util.HashUtils;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Credentials;
 
 @Service
 @Slf4j
@@ -66,6 +67,12 @@ public class TrackRecordServiceImpl implements TrackRecordService {
 	
 	@Value("${smart-contract.kestore-decryption}")
 	private String keyStoreDecrypt;
+	
+	@Value("${kas-access-key}")
+	private String kasAccessKey;
+    
+	@Value("${kas-secrect-access-key}")
+    private String secretAccessKey;
         
     private Caver caver;
            
@@ -77,7 +84,12 @@ public class TrackRecordServiceImpl implements TrackRecordService {
     @PostConstruct
     private void initCaverJava(){
     	try {
-	        caver = new Caver(Caver.MAINNET_URL);
+    		HttpService httpService = new HttpService("https://node-api.klaytnapi.com/v1/klaytn");
+    		String auth = Credentials.basic(kasAccessKey, secretAccessKey, StandardCharsets.UTF_8);
+    		httpService.addHeader("Authorization", auth);
+    		httpService.addHeader("x-chain-id", "8217");
+    		
+	        caver = new Caver(httpService);
 	        contract = new Contract(caver, ABI, trackRecordContractAddress);
 	        
 	        log.info("Contract Address: {}", contract.getContractAddress());

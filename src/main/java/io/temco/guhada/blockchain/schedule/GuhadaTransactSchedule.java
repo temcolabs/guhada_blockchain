@@ -1,6 +1,14 @@
 package io.temco.guhada.blockchain.schedule;
 
-import io.swagger.annotations.Info;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
 import io.temco.guhada.blockchain.mapper.BlockChainMapper;
 import io.temco.guhada.blockchain.model.request.GuhadaTransactRequest;
 import io.temco.guhada.blockchain.model.request.TrackRecord;
@@ -10,16 +18,6 @@ import io.temco.guhada.blockchain.service.GuhadaContractMainnetService;
 import io.temco.guhada.blockchain.service.GuhadaContractService;
 import io.temco.guhada.blockchain.service.TrackRecordService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Created by Shin Han

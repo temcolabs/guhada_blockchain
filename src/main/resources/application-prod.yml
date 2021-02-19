@@ -51,6 +51,8 @@ smart-contract:
   track-record-contract : '0x1e4726d4FF3f01B1e1eBe166E6530985222551eF'
   guhada-account: ENC('jDMMBySGK55pChp0mEm3yLYRgofadq4pQLBmaWuCgBEIk4tleRqzJdZeCg0b7OZQT39z+FZBst9dhLxuaUSkDFrVkh+pav8Zksd1Eun11Vc=')  
   kestore-decryption : ENC('XEgIk3wLNhetw+0KOEHtt82EZBEelhBq')
+  kas-access-key : 'KASKNZ8NNZ1GDTFBUXI241BV'
+  kas-secrect-access-key : 'UqA4YbVbqblDbH26s98gCylr+5MQj1kFJo0cDW6l'
   
 server:
   port: 8080
@@ -63,7 +65,7 @@ retrofit:
 cron:
   exp:
     blockchain:
-      upload-deal : 0 * 3-6 * * ?
+      # upload-deal : 0 * 3-6 * * ?
       guhada-airdrop-update : 0 0 12 * * ?
       coinone-guhada-airdrop-update : 0 0 0 * * ?
       track-record-upload-blockchain: 0 10 12 * * ? # 배치 21:10 KST      

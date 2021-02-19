@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +18,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.protocol.exceptions.TransactionException;
+import org.web3j.protocol.http.HttpService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klaytn.caver.Caver;
@@ -39,11 +41,9 @@ import io.temco.guhada.blockchain.service.LuckyDrawService;
 import io.temco.guhada.blockchain.service.retrofit.ProductApiService;
 import io.temco.guhada.blockchain.smartcontract.LuckyDraw;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Credentials;
 
-/**
- * Created by Shin Han
- * Since 2019-11-13
- */
+
 @Service
 @Slf4j
 public class LuckyDrawServiceImpl implements LuckyDrawService {
@@ -67,6 +67,12 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
     @Value("${smart-contract.kestore-decryption}")
 	private String keyStoreDecrypt;
     
+    @Value("${kas-access-key}")
+	private String kasAccessKey;
+    
+	@Value("${kas-secrect-access-key}")
+    private String secretAccessKey;
+    
     private final BigInteger gasLimit = BigInteger.valueOf(43000000l);
     private Caver caver;
     private LuckyDraw luckyDraw;
@@ -84,7 +90,12 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
     @PostConstruct
     private void initCaverJava(){
     	try {
-	        caver = new Caver(Caver.MAINNET_URL);
+    		HttpService httpService = new HttpService("https://node-api.klaytnapi.com/v1/klaytn");
+    		String auth = Credentials.basic(kasAccessKey, secretAccessKey, StandardCharsets.UTF_8);
+    		httpService.addHeader("Authorization", auth);
+    		httpService.addHeader("x-chain-id", "8217");
+    		
+	        caver = new Caver(httpService);
 	        contract = new Contract(caver, ABI, luckyDrawContractAddress);
 	        
 	        log.info("Contract Address: {}", contract.getContractAddress());
@@ -120,8 +131,8 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
     public String entry(LuckyDrawRequest luckyDrawRequest) {
         LuckyDrawModel luckyDrawModel = luckyDrawMapper.getUser(luckyDrawRequest.getDealId(), luckyDrawRequest.getUserId());
         String eventId = luckyDrawModel.getDealId() + "_" + luckyDrawModel.getUserId();
-        log.error("eventId : {}",eventId);
-        log.error("User Email : {}",luckyDrawModel.getUserEmail());
+        log.info("eventId : {}",eventId);
+        log.info("User Email : {}",luckyDrawModel.getUserEmail());
         String userEmail = luckyDrawModel.getUserEmail().split("@")[0];
         String star = "";
         for(int i= 0; i < userEmail.length() - 2 ; i++) {
@@ -133,7 +144,7 @@ public class LuckyDrawServiceImpl implements LuckyDrawService {
         for(int i=0 ; i < 3 ; i++) {
             try {
                 transactionHash = entryLuckyDraw(luckyDrawRequest, eventId, emailString);
-                log.error("transaction hash : {}" , transactionHash);
+                log.info("transaction hash : {}" , transactionHash);
             }catch (Exception ex){
                 log.error(ex.getMessage());
             }

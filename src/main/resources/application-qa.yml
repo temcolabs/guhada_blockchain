@@ -51,7 +51,8 @@ smart-contract:
   track-record-contract : '0x35AE79fDFF6586b2aed65CC3ddA810b418A21653'
   guhada-account: ENC('jDMMBySGK55pChp0mEm3yLYRgofadq4pQLBmaWuCgBEIk4tleRqzJdZeCg0b7OZQT39z+FZBst9dhLxuaUSkDFrVkh+pav8Zksd1Eun11Vc=')
   kestore-decryption : ENC('XEgIk3wLNhetw+0KOEHtt82EZBEelhBq')
-
+  lucky-draw-contract : '0xa61Acf1443B2684B4ec71185C9d94Ed106d1eBAB'
+  
 server:
   port: 8080
   host: qa.blockchain.guhada.com
@@ -63,7 +64,7 @@ retrofit:
 cron:
   exp:
     blockchain:
-      upload-deal : 0 * 3-6 * * ?
+      # upload-deal : 0 * 3-6 * * ?
       guhada-airdrop-update : 0 0 12 * * ?
       coinone-guhada-airdrop-update : 0 0 0 * * ?
       track-record-upload-blockchain : 0 0 12  * * ?
